@@ -183,3 +183,10 @@ Requisitos que permanecem pendentes:
 - publicar somente após autorização;
 - informar a URL pública e o repositório quando estiverem disponíveis;
 - os avisos `MODULE_LEVEL_DIRECTIVE` de dependências TanStack/Radix são conhecidos e não bloqueiam a compilação.
+
+<!-- LINKS-PUBLICOS:INICIO -->
+## Links públicos
+
+- Aplicação: https://nft-marketplace-neon-delta.vercel.app
+- Repositório: https://github.com/calazans-999/nft-marketplace-kurio
+<!-- LINKS-PUBLICOS:FIM -->
