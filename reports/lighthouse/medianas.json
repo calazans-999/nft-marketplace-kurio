@@ -1,20 +1,20 @@
 {
-  "generatedAt": "2026-11-24T20:18:46.720Z",
-  "node": "v24.22.3",
-  "platform": "linux",
+  "generatedAt": "2026-11-25T00:24:37.857Z",
+  "node": "v22.19.0",
+  "platform": "win32",
   "lighthouse": "13.6.0",
   "summary": [
     {
       "page": "inicio",
       "profile": "mobile",
       "median": {
-        "performance": 95,
-        "accessibility": 100,
-        "best-practices": 100,
+        "performance": 91,
+        "accessibility": 95,
+        "best-practices": 96,
         "seo": 100,
-        "largest-contentful-paint": 2875.5179999999996,
-        "cumulative-layout-shift": 0.0006116543985801912,
-        "total-blocking-time": 0
+        "largest-contentful-paint": 3386.8340000000003,
+        "cumulative-layout-shift": 0,
+        "total-blocking-time": 110
       }
     },
     {
@@ -22,11 +22,11 @@
       "profile": "desktop",
       "median": {
         "performance": 100,
-        "accessibility": 100,
-        "best-practices": 100,
+        "accessibility": 97,
+        "best-practices": 96,
         "seo": 100,
-        "largest-contentful-paint": 606.782,
-        "cumulative-layout-shift": 0.0003100117203483692,
+        "largest-contentful-paint": 758.2306,
+        "cumulative-layout-shift": 0,
         "total-blocking-time": 0
       }
     },
@@ -34,13 +34,13 @@
       "page": "detalhe",
       "profile": "mobile",
       "median": {
-        "performance": 95,
-        "accessibility": 100,
-        "best-practices": 100,
+        "performance": 92,
+        "accessibility": 97,
+        "best-practices": 96,
         "seo": 100,
-        "largest-contentful-paint": 2866.821,
-        "cumulative-layout-shift": 0.0006116543985801912,
-        "total-blocking-time": 0
+        "largest-contentful-paint": 3353.69005,
+        "cumulative-layout-shift": 0.02689387284465895,
+        "total-blocking-time": 44
       }
     },
     {
@@ -49,10 +49,10 @@
       "median": {
         "performance": 100,
         "accessibility": 100,
-        "best-practices": 100,
+        "best-practices": 96,
         "seo": 100,
-        "largest-contentful-paint": 609.108,
-        "cumulative-layout-shift": 0.007298788244463724,
+        "largest-contentful-paint": 746.952,
+        "cumulative-layout-shift": 0,
         "total-blocking-time": 0
       }
     }
