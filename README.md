@@ -163,27 +163,29 @@ As artes ficam em `public/art/`, com versões SVG, PNG e WebP locais. O projeto 
 - Os filtros visuais sem contrato de API permanecem demonstrativos. Busca, coleção, ordenação e paginação continuam integradas à URL e à API.
 - Os botões sociais mantêm comportamento neutro, pois autenticação social não integra o escopo funcional.
 
-## Pendências para a rodada final
+## Status final da entrega
 
-Validações concluídas nesta etapa:
+Validações concluídas:
 
 - `npm run typecheck`: aprovado;
 - `npm run lint`: aprovado;
 - `npm test`: 15 testes de contrato aprovados;
 - `npm run build`: aprovado;
-- grupos funcionais corrigidos do Playwright aprovados em desktop e mobile.
+- Playwright: 53 testes aprovados e 3 testes responsivos ignorados conforme a configuração dos projetos;
+- snapshots de desktop e mobile revisados e aprovados;
+- acesso direto às rotas publicadas validado com resposta HTTP 200;
+- aplicação publicada na Vercel;
+- repositório público sincronizado com a branch `main`;
+- avisos `MODULE_LEVEL_DIRECTIVE` de dependências TanStack/Radix conhecidos e não bloqueantes.
 
-Requisitos que permanecem pendentes:
+Medianas finais do Lighthouse no Windows:
 
-- executar a suíte completa do Playwright em uma única rodada;
-- executar separadamente os testes visuais de `release.spec.ts`;
-- revisar ou atualizar snapshots somente após inspeção visual;
-- executar Lighthouse e registrar as medianas finais;
-- validar acesso direto e refresh das rotas no ambiente publicado;
-- publicar somente após autorização;
-- informar a URL pública e o repositório quando estiverem disponíveis;
-- os avisos `MODULE_LEVEL_DIRECTIVE` de dependências TanStack/Radix são conhecidos e não bloqueiam a compilação.
-
+| Página | Perfil | Performance | Acessibilidade | Boas práticas | SEO |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Início | Mobile | 91 | 95 | 96 | 100 |
+| Início | Desktop | 100 | 97 | 96 | 100 |
+| Detalhe | Mobile | 92 | 97 | 96 | 100 |
+| Detalhe | Desktop | 100 | 100 | 96 | 100 |
 <!-- LINKS-PUBLICOS:INICIO -->
 ## Links públicos
 
