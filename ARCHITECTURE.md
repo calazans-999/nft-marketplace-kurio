@@ -48,3 +48,43 @@ dedicadas e o recibo apresenta uma transação simulada.
 - [Componente Dialog do shadcn/ui](https://ui.shadcn.com/docs/components/dialog)
 - [Lighthouse executado como módulo Node](https://github.com/GoogleChrome/lighthouse/blob/main/docs/readme.md#using-programmatically)
 - [Vite na Vercel](https://vercel.com/docs/frameworks/frontend/vite)
+
+## Política de cache e sincronização
+
+As consultas públicas usam chaves formadas pelo recurso e pelos parâmetros da URL. Consultas privadas incluem o identificador da conta para impedir compartilhamento entre usuários. Mutations atualizam ou invalidam apenas os recursos relacionados.
+
+O catálogo envia busca, coleção, ordenação e página à API. Alterações de filtro reiniciam a página. O sinal de cancelamento do TanStack Query é encaminhado ao Axios, permitindo descartar respostas obsoletas.
+
+Após login ou logout, a aplicação é recarregada para reconstruir cache, sessão e subscriptions. Alterações de favoritos usam atualização otimista e restauração do valor anterior em caso de falha. Carrinho, checkout e pedidos usam a resposta da API como fonte dos valores finais.
+
+Eventos Socket.IO não substituem a API REST. Ao receber `nft.updated` ou `order.updated`, o cliente verifica identidade e versão e reconcilia os recursos ativos por nova consulta. Reconexões também provocam reconciliação. Listeners são removidos no cleanup dos efeitos.
+
+## Rotas e autorização
+
+TanStack Router controla as rotas públicas e privadas. Checkout, perfil, carteiras, favoritos e pedidos exigem sessão válida. Quando uma sessão expira, a localização atual é preservada para retomada depois do login.
+
+Rotas de detalhe e pedido aceitam acesso direto. Recursos inexistentes apresentam estado de erro coerente. A configuração da Vercel redireciona rotas da SPA para `index.html`, preservando refresh e acesso por URL.
+
+## Responsividade, UX e acessibilidade
+
+A interface utiliza os mesmos componentes e dados em desktop e mobile. Media queries reorganizam cabeçalho, catálogo, galerias, carrinho, checkout e autenticação sem duplicar regras de negócio.
+
+Os frames mobile disponíveis foram aplicados a início, detalhe, carrinho, pagamento, login e cadastro. Perfil, carteiras e recibo receberam comportamento responsivo derivado da identidade visual.
+
+Decisões de acessibilidade incluem semântica nativa, labels, mensagens associadas, regiões de status, foco visível, skip link e diálogo baseado em Radix. Controles relevantes conservam nomes acessíveis mesmo quando o texto visual é adaptado ao frame móvel.
+
+Os componentes dependentes de dados preservam espaço por meio de skeletons. Animações e transições devem respeitar `prefers-reduced-motion`.
+
+## Assets e desvios do Figma
+
+As artes originais disponíveis foram consolidadas em `public/art/`, com alternativas WebP para reduzir transferência. Ícones sem asset exportável foram recriados com SVG local ou símbolos textuais acessíveis. A fonte do design foi substituída por uma pilha monoespaçada de sistema para manter execução offline e reproduzível.
+
+O campo “Confirmar senha” exibido no frame mobile de cadastro não faz parte do contrato atual de contas e não foi adicionado apenas como elemento visual. O cadastro valida nome, e-mail, senha mínima e conflitos retornados pela API.
+
+Autenticação social, newsletter, links editoriais e redes sociais são ações auxiliares sem integração externa. Elas não apresentam confirmação falsa. Blockchain, carteiras reais e pagamentos reais permanecem fora do escopo.
+
+## Limitações do ambiente simulado
+
+O MSW mantém o estado da demonstração no navegador. A simulação Socket.IO usa o transporte compatível disponibilizado pelo projeto e não representa uma rede blockchain. Dados não são compartilhados entre origens ou dispositivos.
+
+Os relatórios visuais versionados foram gerados em Linux. Diferenças de renderização de fonte e navegador podem exigir snapshots específicos para Windows depois de inspeção manual. A publicação, a rodada final do Playwright e as medianas finais do Lighthouse permanecem pendentes até autorização.

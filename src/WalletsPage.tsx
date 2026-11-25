@@ -68,8 +68,21 @@ function WalletForm({
   }
 
   return (
-    <form aria-label={title} onSubmit={submit}>
-      <h2>{title}</h2>
+    <form
+      className={`wallet-form wallet-${slot}`}
+      aria-label={title}
+      onSubmit={submit}
+    >
+      <div className="wallet-form-heading">
+        <span aria-hidden="true">W</span>
+        <div>
+          <small>
+            {slot === "primary" ? "CARTEIRA PRINCIPAL" : "CARTEIRA DE RESERVA"}
+          </small>
+          <h2>{title}</h2>
+        </div>
+        <strong>{saved ? "Conectada" : "Não cadastrada"}</strong>
+      </div>
 
       <label htmlFor={prefix + "-name"}>Nome da carteira</label>
       <input
@@ -110,7 +123,13 @@ function WalletForm({
         </p>
       )}
 
-      <p>Rede · Ethereum Demo</p>
+      <div className="wallet-network">
+        <span aria-hidden="true">◇</span>
+        <div>
+          <small>Rede selecionada</small>
+          <p>Rede · Ethereum Demo</p>
+        </div>
+      </div>
       <button type="submit" className="action" disabled={save.isPending}>
         {save.isPending
           ? "Salvando…"
@@ -140,26 +159,54 @@ export function WalletsPage({
   });
 
   return (
-    <section className="account">
-      <h1>Minhas carteiras</h1>
+    <section className="wallets-page">
+      <div className="wallets-breadcrumbs">
+        <a href="/">Início</a>
+        <span aria-hidden="true"> / </span>
+        Minhas carteiras
+      </div>
+
+      <div className="wallets-title">
+        <div>
+          <small>GERENCIAMENTO DE CARTEIRAS</small>
+          <h1>Minhas carteiras</h1>
+        </div>
+        <p>
+          Cadastre até duas carteiras para utilizar durante suas aquisições.
+        </p>
+      </div>
+
       {query.isPending ? (
         <p role="status">Carregando carteiras…</p>
       ) : query.isError ? (
-        <div role="alert">
+        <div role="alert" className="wallets-load-error">
           Falha ao carregar as carteiras.{" "}
           <button onClick={() => query.refetch()}>Tentar novamente</button>
         </div>
       ) : (
-        (["primary", "secondary"] as const).map((slot) => (
-          <WalletForm
-            key={slot}
-            api={api}
-            owner={owner}
-            slot={slot}
-            saved={query.data.wallets.find((w) => w.slot === slot)}
-          />
-        ))
+        <div className="wallets-grid">
+          {(["primary", "secondary"] as const).map((slot) => (
+            <WalletForm
+              key={slot}
+              api={api}
+              owner={owner}
+              slot={slot}
+              saved={query.data.wallets.find((wallet) => wallet.slot === slot)}
+            />
+          ))}
+        </div>
       )}
+
+      <aside className="wallets-security">
+        <span aria-hidden="true">S</span>
+        <div>
+          <h2>Segurança da carteira</h2>
+          <p>
+            Esta experiência utiliza carteiras e transações simuladas. Nunca
+            informe frases de recuperação ou chaves privadas.
+          </p>
+        </div>
+      </aside>
     </section>
   );
 }

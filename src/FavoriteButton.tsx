@@ -69,6 +69,7 @@ export function FavoriteButton({
     <div>
       <button
         type="button"
+        aria-label={selected ? "Remover dos favoritos" : "Favoritar obra"}
         aria-pressed={selected}
         disabled={busy}
         onClick={() => change.mutate(!selected)}

@@ -213,10 +213,38 @@ export function Payment({
       <div className="breadcrumbs">
         <a href="/">Início</a> / Mercado / Pagamento
       </div>
-      <h1>Pagamento</h1>
+      <div className="checkout-title">
+        <div>
+          <small>CHECKOUT SEGURO</small>
+          <h1>Pagamento</h1>
+        </div>
+        <p>Revise sua carteira e confirme a aquisição dos NFTs.</p>
+      </div>
+
+      <ol className="checkout-steps" aria-label="Etapas do pagamento">
+        <li className="complete">
+          <span>1</span>
+          Carrinho
+        </li>
+        <li className="active">
+          <span>2</span>
+          Pagamento
+        </li>
+        <li>
+          <span>3</span>
+          Confirmação
+        </li>
+      </ol>
+
       <div className="checkout-grid">
-        <section>
-          <h2>Perfil do colecionador</h2>
+        <section className="checkout-form">
+          <div className="checkout-section-heading">
+            <span aria-hidden="true">W</span>
+            <div>
+              <small>CARTEIRA DIGITAL</small>
+              <h2>Perfil do colecionador</h2>
+            </div>
+          </div>
           <dl className="collector-details">
             <div>
               <dt>Nome de exibição</dt>
@@ -469,7 +497,11 @@ export function Receipt({
 
   if (order.status === "pending")
     return (
-      <section className="account">
+      <section className="receipt-state receipt-pending">
+        <div className="receipt-state-icon" aria-hidden="true">
+          …
+        </div>
+        <small>PROCESSANDO TRANSAÇÃO</small>
         <h1>Pagamento em processamento</h1>
         <p role="status">
           {paused
@@ -478,8 +510,12 @@ export function Receipt({
               ? "Aguardando o resultado do pagamento."
               : "Consultando o estado do pedido."}
         </p>
-        <p>Pedido · {order.id}</p>
-        <Amounts quote={order.quote} />
+
+        <div className="receipt-state-order">
+          <p>Pedido · {order.id}</p>
+          <Amounts quote={order.quote} />
+        </div>
+
         <button
           onClick={() => {
             setOnline(false);
@@ -494,34 +530,99 @@ export function Receipt({
 
   if (order.status === "declined")
     return (
-      <section className="account">
+      <section className="receipt-state receipt-declined">
+        <div className="receipt-state-icon" aria-hidden="true">
+          ×
+        </div>
+        <small>TRANSAÇÃO NÃO CONCLUÍDA</small>
         <h1>Pagamento recusado</h1>
         <p role="status">
           A compra não foi concluída. Os itens continuam no carrinho.
         </p>
-        <p>Pedido · {order.id}</p>
-        <a href="/carrinho">Voltar ao carrinho</a>
+        <p className="receipt-order-id">Pedido · {order.id}</p>
+        <a className="action" href="/carrinho">
+          Voltar ao carrinho
+        </a>
       </section>
     );
 
   return (
-    <section className="account receipt">
-      <h1>Compra confirmada</h1>
-      <p className="muted">Seus NFTs foram adicionados à carteira simulada.</p>
-      <p>Rede · {order.network}</p>
-      {order.walletSnapshot ? (
-        <div aria-label="Carteira usada no pagamento">
-          <p>Carteira · {order.walletSnapshot.label}</p>
-          <p style={{ overflowWrap: "anywhere" }}>
-            Endereço · {order.walletSnapshot.address}
-          </p>
+    <section className="receipt-page">
+      <div className="breadcrumbs">
+        <a href="/">Início</a>
+        <span aria-hidden="true"> / </span>
+        <a href="/carrinho">Carrinho</a>
+        <span aria-hidden="true"> / </span>
+        Confirmação
+      </div>
+
+      <header className="receipt-success">
+        <div className="receipt-success-icon" aria-hidden="true">
+          ✓
         </div>
-      ) : (
-        <p style={{ overflowWrap: "anywhere" }}>Carteira · {order.wallet}</p>
-      )}
-      <p>Transação simulada · {order.transaction}</p>
-      <Amounts quote={order.quote} />
-      <a href="/">Voltar ao catálogo</a>
+        <small>PAGAMENTO APROVADO</small>
+        <h1>Compra confirmada</h1>
+        <p>Seus NFTs foram adicionados à carteira simulada.</p>
+      </header>
+
+      <div className="receipt-layout">
+        <article className="receipt-card">
+          <div className="receipt-card-heading">
+            <div>
+              <small>RESUMO DO PEDIDO</small>
+              <h2>Detalhes da transação</h2>
+            </div>
+            <span>Confirmado</span>
+          </div>
+
+          <dl className="receipt-metadata">
+            <div>
+              <dt>Pedido</dt>
+              <dd>{order.id}</dd>
+            </div>
+            <div>
+              <dt>Rede</dt>
+              <dd>Rede · {order.network}</dd>
+            </div>
+          </dl>
+
+          <div className="receipt-wallet">
+            {order.walletSnapshot ? (
+              <div aria-label="Carteira usada no pagamento">
+                <p>Carteira · {order.walletSnapshot.label}</p>
+                <p>Endereço · {order.walletSnapshot.address}</p>
+              </div>
+            ) : (
+              <p>Carteira · {order.wallet}</p>
+            )}
+          </div>
+
+          <a className="receipt-wallet-link" href="/carteiras">
+            Minhas carteiras
+          </a>
+
+          <p className="receipt-transaction">
+            Transação simulada · {order.transaction}
+          </p>
+
+          <div className="receipt-amounts">
+            <Amounts quote={order.quote} />
+          </div>
+        </article>
+
+        <aside className="receipt-next">
+          <span aria-hidden="true">K</span>
+          <h2>Agora eles são seus</h2>
+          <p>
+            As obras desta compra já aparecem na sua carteira simulada e no
+            histórico do colecionador.
+          </p>
+          <a className="action" href="/">
+            Voltar ao catálogo
+          </a>
+          <a href="/perfil">Ver meu perfil</a>
+        </aside>
+      </div>
     </section>
   );
 }

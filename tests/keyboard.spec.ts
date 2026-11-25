@@ -9,7 +9,7 @@ async function chegarComTab(page: Page, alvo: Locator, limite = 30) {
   await expect(alvo).toBeFocused();
 }
 
-test("teclado permite pular o menu, buscar uma obra e adicioná-la ao carrinho", async ({ page }) => {
+test("teclado permite pular o menu, buscar uma obra e adicioná-la ao carrinho", async ({ page }, testInfo) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Órbita Solar", exact: true })).toBeVisible();
 
@@ -21,7 +21,9 @@ test("teclado permite pular o menu, buscar uma obra e adicioná-la ao carrinho",
   await page.keyboard.press("Enter");
   await expect(page.locator("main#content")).toBeFocused();
 
-  const busca = page.getByRole("searchbox", { name: "Buscar obra" });
+  const nomeDaBusca =
+    testInfo.project.name === "mobile" ? "Busca rápida" : "Buscar obra";
+  const busca = page.getByRole("searchbox", { name: nomeDaBusca });
   await chegarComTab(page, busca);
   await page.keyboard.type("Jade");
 

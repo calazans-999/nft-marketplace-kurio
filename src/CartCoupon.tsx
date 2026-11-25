@@ -65,6 +65,7 @@ export function CartCoupon({
           disabled={change.isPending}
           aria-describedby={change.isError ? "cart-coupon-error" : undefined}
           autoComplete="off"
+          placeholder="Digite o código promocional..."
         />
         <button type="submit" disabled={change.isPending || !code.trim()}>
           Aplicar cupom

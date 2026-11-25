@@ -68,6 +68,7 @@ function ProfileForm({
 
   return (
     <form
+      className="profile-data-form"
       aria-label="Dados do perfil"
       onSubmit={submit}
       onChange={() => {
@@ -168,6 +169,7 @@ function PasswordForm({ api }: { api: AxiosInstance }) {
   const issue = change.isError ? problem(change.error) : undefined;
   return (
     <form
+      className="profile-password-form"
       aria-label="Alteração de senha"
       onChange={() => {
         if (change.isSuccess || change.isError) change.reset();
@@ -239,24 +241,73 @@ export function ProfilePage({
   });
 
   return (
-    <section className="account">
-      <h1>Meu perfil</h1>
+    <section className="collector-profile">
+      <div className="profile-breadcrumbs">
+        <a href="/">Início</a>
+        <span aria-hidden="true"> / </span>
+        Meu perfil
+      </div>
+
+      <div className="profile-title">
+        <div>
+          <small>CONTA DO COLECIONADOR</small>
+          <h1>Perfil do colecionador</h1>
+        </div>
+        <a href="/carteiras">Gerenciar carteiras →</a>
+      </div>
+
       {query.isPending ? (
         <p role="status">Carregando perfil…</p>
       ) : query.isError ? (
-        <div role="alert">
+        <div role="alert" className="profile-load-error">
           Falha ao carregar o perfil.{" "}
           <button onClick={() => query.refetch()}>Tentar novamente</button>
         </div>
       ) : (
         <>
-          <ProfileForm
-            key={owner}
-            api={api}
-            profile={query.data}
-            onSaved={onSaved}
-          />
-          <PasswordForm api={api} />
+          <section className="profile-overview">
+            <div className="profile-avatar">
+              {query.data.avatarId ? (
+                <img
+                  src={"/art/" + query.data.avatarId + ".svg"}
+                  alt=""
+                  width={112}
+                  height={112}
+                />
+              ) : (
+                <span aria-hidden="true">
+                  {query.data.name.slice(0, 1).toUpperCase()}
+                </span>
+              )}
+            </div>
+
+            <div>
+              <small>PERFIL ATIVO</small>
+              <h2>{query.data.name}</h2>
+              <p>{query.data.email}</p>
+            </div>
+
+            <dl>
+              <div>
+                <dt>Status</dt>
+                <dd>Verificado</dd>
+              </div>
+              <div>
+                <dt>Tipo</dt>
+                <dd>Colecionador</dd>
+              </div>
+            </dl>
+          </section>
+
+          <div className="profile-forms">
+            <ProfileForm
+              key={owner}
+              api={api}
+              profile={query.data}
+              onSaved={onSaved}
+            />
+            <PasswordForm api={api} />
+          </div>
         </>
       )}
     </section>

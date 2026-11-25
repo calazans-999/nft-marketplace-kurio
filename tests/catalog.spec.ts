@@ -24,16 +24,21 @@ test("Carrinho de visitante persiste e respeita o estoque", async ({
     page.getByText("Seu carrinho está vazio.", { exact: false }),
   ).toBeVisible();
 });
-test("Consulta e paginação sobrevivem ao histórico e refresh", async ({
-  page,
-}) => {
+test("Consulta e paginação sobrevivem ao histórico e refresh", async (
+  { page },
+  testInfo,
+) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Próxima" }).click();
   await expect(page.getByText("Página 2")).toBeVisible();
   await page.getByLabel("Coleção", { exact: true }).selectOption("Ondas");
   await expect(page.getByText("Página 1")).toBeVisible();
   await page.getByLabel("Ordenar por").selectOption("price");
-  await page.getByLabel("Buscar obra").fill("Maré");
+  const busca =
+    testInfo.project.name === "mobile"
+      ? page.getByRole("searchbox", { name: "Busca rápida" })
+      : page.getByRole("searchbox", { name: "Buscar obra" });
+  await busca.fill("Maré");
   await page.reload();
   await expect(page.getByRole("heading", { name: "Maré Lunar" })).toBeVisible();
   await expect(page.locator(".card")).toHaveCount(1);

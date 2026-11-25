@@ -52,9 +52,10 @@ test("catálogo mostra skeleton, informa erro 503 e recupera pela nova tentativa
   await expect(page).toHaveURL(urlDaBusca);
 });
 
-test("busca antiga liberada depois mantém o resultado e a URL da busca atual", async ({
-  page,
-}) => {
+test("busca antiga liberada depois mantém o resultado e a URL da busca atual", async (
+  { page },
+  testInfo,
+) => {
   async function race(action: "arm" | "release" | "status"): Promise<string> {
     return page.evaluate(async (action) => {
       const response = await fetch("/api/demo/catalog-race/" + action, {
@@ -67,7 +68,10 @@ test("busca antiga liberada depois mantém o resultado e a URL da busca atual", 
 
   await page.goto("/");
   const catalogo = page.locator("#catalogo");
-  const busca = catalogo.getByRole("searchbox", { name: "Buscar obra" });
+  const busca =
+    testInfo.project.name === "mobile"
+      ? page.getByRole("searchbox", { name: "Busca rápida" })
+      : catalogo.getByRole("searchbox", { name: "Buscar obra" });
   const jade = catalogo.getByRole("heading", {
     name: "Anel de Jade",
     exact: true,
