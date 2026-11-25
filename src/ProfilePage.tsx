@@ -19,12 +19,12 @@ function problem(error: unknown): ApiError {
 }
 
 const avatars = [
-  ["1", "Órbita Solar"],
-  ["2", "Maré Lunar"],
-  ["3", "Anel de Jade"],
-  ["4", "Eclipse de Cobre"],
-  ["5", "Pulso Violeta"],
-  ["6", "Vórtice Boreal"],
+  ["1", "Emerald Ape #042"],
+  ["2", "Sage Nomad #009"],
+  ["3", "Neon Vessel #552"],
+  ["4", "Cosmic Bloom #118"],
+  ["5", "Violet Nomad #314"],
+  ["6", "Ivory Baron #088"],
 ];
 
 function ProfileForm({
@@ -40,6 +40,16 @@ function ProfileForm({
   const [name, setName] = useState(profile.name);
   const [email, setEmail] = useState(profile.email);
   const [avatarId, setAvatarId] = useState(profile.avatarId ?? "");
+  const [username, setUsername] = useState(
+    localStorage.getItem(`kurio:username:${profile.id}`) ??
+      profile.name.toLowerCase().replace(/\s+/g, ""),
+  );
+  const [ens, setEns] = useState(
+    localStorage.getItem(`kurio:ens:${profile.id}`) ?? "",
+  );
+  const [walletNickname, setWalletNickname] = useState(
+    localStorage.getItem(`kurio:wallet-name:${profile.id}`) ?? "Principal",
+  );
 
   const save = useMutation({
     retry: false,
@@ -56,6 +66,12 @@ function ProfileForm({
       setEmail(updated.email);
       setAvatarId(updated.avatarId ?? "");
       client.setQueryData(["profile", updated.id], updated);
+      localStorage.setItem(`kurio:username:${updated.id}`, username);
+      localStorage.setItem(`kurio:ens:${updated.id}`, ens);
+      localStorage.setItem(
+        `kurio:wallet-name:${updated.id}`,
+        walletNickname,
+      );
       onSaved(updated);
     },
   });
@@ -68,6 +84,7 @@ function ProfileForm({
 
   return (
     <form
+      id="profile-data-form"
       className="profile-data-form"
       aria-label="Dados do perfil"
       onSubmit={submit}
@@ -75,11 +92,15 @@ function ProfileForm({
         if (save.isSuccess || save.isError) save.reset();
       }}
     >
-      <h2>Dados do colecionador</h2>
-      <fieldset disabled={save.isPending}>
-        <label htmlFor="profile-name">Nome</label>
+      <h2>Perfil do colecionador</h2>
+
+      <fieldset className="profile-figma-fields" disabled={save.isPending}>
+        <label htmlFor="profile-name">
+          Nome de exibição<span aria-hidden="true">*</span>
+        </label>
         <input
           id="profile-name"
+          aria-label="Nome"
           autoComplete="name"
           required
           minLength={2}
@@ -92,7 +113,19 @@ function ProfileForm({
           }
         />
 
-        <label htmlFor="profile-email">E-mail</label>
+        <label htmlFor="profile-username">
+          Nome de usuário<span aria-hidden="true">*</span>
+        </label>
+        <input
+          id="profile-username"
+          required
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+
+        <label htmlFor="profile-email">
+          E-mail<span aria-hidden="true">*</span>
+        </label>
         <input
           id="profile-email"
           type="email"
@@ -106,36 +139,72 @@ function ProfileForm({
           }
         />
 
-        <label htmlFor="profile-avatar">Avatar</label>
-        <select
-          id="profile-avatar"
-          value={avatarId}
-          onChange={(e) => setAvatarId(e.target.value)}
-          aria-invalid={issue?.field === "avatarId" || undefined}
-          aria-describedby={
-            issue?.field === "avatarId" ? "profile-error" : undefined
-          }
-        >
-          <option value="">Sem avatar</option>
-          {avatars.map(([id, title]) => (
-            <option key={id} value={id}>
-              {title}
-            </option>
-          ))}
-        </select>
-        {avatarId && (
-          <img
-            src={"/art/" + avatarId + ".svg"}
-            width={120}
-            height={80}
-            alt={
-              "Avatar selecionado: " +
-              avatars.find(([id]) => id === avatarId)?.[1]
-            }
+        <label htmlFor="profile-ens">
+          Nome ENS <span aria-hidden="true">*</span>
+        </label>
+        <div className="profile-ens-field">
+          <span>.eth</span>
+          <input
+            id="profile-ens"
+            value={ens}
+            onChange={(e) => setEns(e.target.value)}
+            aria-label="Nome ENS"
           />
-        )}
+        </div>
 
-        <button type="submit" className="action">
+        <label htmlFor="profile-wallet-name">
+          Apelido da carteira<span aria-hidden="true">*</span>
+        </label>
+        <input
+          id="profile-wallet-name"
+          required
+          value={walletNickname}
+          onChange={(e) => setWalletNickname(e.target.value)}
+        />
+
+        <div className="profile-avatar-editor">
+          <span>Avatar</span>
+          <div>
+            <span className="profile-avatar-preview" aria-hidden="true">
+              {avatarId ? (
+                <img src={"/art/" + avatarId + ".svg"} alt="" />
+              ) : (
+                "◉"
+              )}
+            </span>
+
+            <label className="profile-avatar-change" htmlFor="profile-avatar">
+              Alterar
+            </label>
+            <select
+              id="profile-avatar"
+              value={avatarId}
+              onChange={(e) => setAvatarId(e.target.value)}
+              aria-label="Avatar"
+              aria-invalid={issue?.field === "avatarId" || undefined}
+              aria-describedby={
+                issue?.field === "avatarId" ? "profile-error" : undefined
+              }
+            >
+              <option value="">Sem avatar</option>
+              {avatars.map(([id, title]) => (
+                <option key={id} value={id}>
+                  {title}
+                </option>
+              ))}
+            </select>
+
+            <button
+              type="button"
+              className="profile-avatar-remove"
+              onClick={() => setAvatarId("")}
+            >
+              Remover
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" className="action profile-save-action">
           Salvar perfil
         </button>
       </fieldset>
@@ -152,6 +221,9 @@ function ProfileForm({
 function PasswordForm({ api }: { api: AxiosInstance }) {
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
+  const [confirmation, setConfirmation] = useState("");
+  const [visible, setVisible] = useState(false);
+  const [localError, setLocalError] = useState("");
 
   const change = useMutation({
     retry: false,
@@ -163,6 +235,8 @@ function PasswordForm({ api }: { api: AxiosInstance }) {
     onSuccess: () => {
       setCurrent("");
       setNext("");
+      setConfirmation("");
+      setLocalError("");
     },
   });
 
@@ -176,15 +250,23 @@ function PasswordForm({ api }: { api: AxiosInstance }) {
       }}
       onSubmit={(e) => {
         e.preventDefault();
+
+        if (confirmation && confirmation !== next) {
+          setLocalError("A confirmação não coincide com a nova senha.");
+          return;
+        }
+
+        setLocalError("");
         if (!change.isPending) change.mutate();
       }}
     >
       <h2>Alterar senha</h2>
       <fieldset disabled={change.isPending}>
         <label htmlFor="profile-current">Senha atual</label>
+        <span className="profile-password-input">
         <input
           id="profile-current"
-          type="password"
+          type={visible ? "text" : "password"}
           autoComplete="current-password"
           required
           value={current}
@@ -194,11 +276,20 @@ function PasswordForm({ api }: { api: AxiosInstance }) {
             issue?.field === "currentPassword" ? "password-error" : undefined
           }
         />
+        <button
+          type="button"
+          aria-label={visible ? "Ocultar senhas" : "Mostrar senhas"}
+          onClick={() => setVisible((value) => !value)}
+        >
+          ◉
+        </button>
+        </span>
 
         <label htmlFor="profile-next">Nova senha</label>
+        <span className="profile-password-input">
         <input
           id="profile-next"
-          type="password"
+          type={visible ? "text" : "password"}
           autoComplete="new-password"
           required
           minLength={8}
@@ -209,15 +300,54 @@ function PasswordForm({ api }: { api: AxiosInstance }) {
             issue?.field === "newPassword" ? "password-error" : "password-hint"
           }
         />
+        <button
+          type="button"
+          aria-label={visible ? "Ocultar senhas" : "Mostrar senhas"}
+          onClick={() => setVisible((value) => !value)}
+        >
+          ◉
+        </button>
+        </span>
+
+        <label htmlFor="profile-confirmation">Confirmar nova senha</label>
+        <span className="profile-password-input">
+          <input
+            id="profile-confirmation"
+            type={visible ? "text" : "password"}
+            autoComplete="new-password"
+            minLength={8}
+            value={confirmation}
+            onChange={(event) => {
+              setConfirmation(event.target.value);
+              setLocalError("");
+            }}
+          />
+          <button
+            type="button"
+            aria-label={visible ? "Ocultar senhas" : "Mostrar senhas"}
+            onClick={() => setVisible((value) => !value)}
+          >
+            ◉
+          </button>
+        </span>
+
         <p id="password-hint">Use pelo menos 8 caracteres.</p>
 
-        <button type="submit" className="action">
-          Salvar nova senha
+        <button
+          type="submit"
+          className="action"
+          onClick={() => {
+            document
+              .querySelector<HTMLFormElement>("#profile-data-form")
+              ?.requestSubmit();
+          }}
+        >
+          Salvar
         </button>
       </fieldset>
-      {issue && (
+      {(issue || localError) && (
         <p role="alert" id="password-error">
-          {issue.message}
+          {localError || issue?.message}
         </p>
       )}
       <p role="status">{change.isSuccess ? "Senha alterada." : ""}</p>
@@ -240,66 +370,51 @@ export function ProfilePage({
       (await api.get<CollectorProfile>("/profile", { signal })).data,
   });
 
+  const logout = async () => {
+    await api.delete("/session");
+    sessionStorage.removeItem("forma:token");
+    sessionStorage.removeItem("forma:return");
+    location.replace("/");
+  };
+
   return (
-    <section className="collector-profile">
-      <div className="profile-breadcrumbs">
-        <a href="/">Início</a>
-        <span aria-hidden="true"> / </span>
-        Meu perfil
-      </div>
+    <section className="collector-profile profile-figma-page">
+      <a
+        className="mobile-profile-back"
+        href="/"
+        aria-label="Voltar à página inicial"
+      >
+        ‹
+      </a>
 
-      <div className="profile-title">
-        <div>
-          <small>CONTA DO COLECIONADOR</small>
-          <h1>Perfil do colecionador</h1>
-        </div>
-        <a href="/carteiras">Gerenciar carteiras →</a>
-      </div>
+      <aside className="profile-sidebar" aria-label="Menu do perfil">
+        <h1>Meu perfil</h1>
 
-      {query.isPending ? (
-        <p role="status">Carregando perfil…</p>
-      ) : query.isError ? (
-        <div role="alert" className="profile-load-error">
-          Falha ao carregar o perfil.{" "}
-          <button onClick={() => query.refetch()}>Tentar novamente</button>
-        </div>
-      ) : (
-        <>
-          <section className="profile-overview">
-            <div className="profile-avatar">
-              {query.data.avatarId ? (
-                <img
-                  src={"/art/" + query.data.avatarId + ".svg"}
-                  alt=""
-                  width={112}
-                  height={112}
-                />
-              ) : (
-                <span aria-hidden="true">
-                  {query.data.name.slice(0, 1).toUpperCase()}
-                </span>
-              )}
-            </div>
+        <a className="active" href="/perfil">♙ <span>Dados do perfil</span></a>
+        <a href="/carteiras">⌾ <span>Carteiras</span></a>
+        <a href="/atividade">♢ <span>Atividade</span></a>
+        <a href="/lista-de-interesse">♡ <span>Lista de interesse</span></a>
+        <a href="/ofertas">◉ <span>Ofertas</span></a>
+        <a href="/downloads">⇩ <span>Arquivos baixados</span></a>
+        <a href="mailto:contato@kurio.test?subject=Suporte">△ <span>Suporte</span></a>
 
-            <div>
-              <small>PERFIL ATIVO</small>
-              <h2>{query.data.name}</h2>
-              <p>{query.data.email}</p>
-            </div>
+        <button type="button" onClick={() => void logout()}>
+          ⇥ <span>Sair</span>
+        </button>
+      </aside>
 
-            <dl>
-              <div>
-                <dt>Status</dt>
-                <dd>Verificado</dd>
-              </div>
-              <div>
-                <dt>Tipo</dt>
-                <dd>Colecionador</dd>
-              </div>
-            </dl>
-          </section>
-
-          <div className="profile-forms">
+      <div className="profile-figma-content">
+        {query.isPending ? (
+          <p role="status">Carregando perfil…</p>
+        ) : query.isError ? (
+          <div role="alert" className="profile-load-error">
+            Falha ao carregar o perfil.{" "}
+            <button type="button" onClick={() => query.refetch()}>
+              Tentar novamente
+            </button>
+          </div>
+        ) : (
+          <>
             <ProfileForm
               key={owner}
               api={api}
@@ -307,9 +422,9 @@ export function ProfilePage({
               onSaved={onSaved}
             />
             <PasswordForm api={api} />
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </div>
     </section>
   );
 }

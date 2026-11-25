@@ -16,7 +16,7 @@ test("catálogo mostra skeleton, informa erro 503 e recupera pela nova tentativa
 }) => {
   await page.goto("/nft/1");
   await expect(
-    page.getByRole("heading", { name: "Órbita Solar" }),
+    page.getByRole("heading", { name: "Emerald Ape #042" }),
   ).toBeVisible();
 
   await scenario(page, "arm");
@@ -25,7 +25,7 @@ test("catálogo mostra skeleton, informa erro 503 e recupera pela nova tentativa
   const catalogo = page.locator("#catalogo");
   const loading = catalogo.getByRole("status", { name: "Carregando conteúdo" });
   const obra = catalogo.getByRole("heading", {
-    name: "Órbita Solar",
+    name: "Emerald Ape #042",
     exact: true,
   });
 
@@ -68,46 +68,53 @@ test("busca antiga liberada depois mantém o resultado e a URL da busca atual", 
 
   await page.goto("/");
   const catalogo = page.locator("#catalogo");
+
+  if (testInfo.project.name === "desktop") {
+    await page
+      .getByRole("button", { name: "Buscar no marketplace" })
+      .click();
+  }
+
   const busca =
     testInfo.project.name === "mobile"
       ? page.getByRole("searchbox", { name: "Busca rápida" })
-      : catalogo.getByRole("searchbox", { name: "Buscar obra" });
+      : page.getByRole("searchbox", { name: "Buscar obra" });
   const jade = catalogo.getByRole("heading", {
-    name: "Anel de Jade",
+    name: "Neon Vessel #552",
     exact: true,
   });
   const mare = catalogo.getByRole("heading", {
-    name: "Maré Lunar",
+    name: "Sage Nomad #009",
     exact: true,
   });
 
   await expect(
-    catalogo.getByRole("heading", { name: "Órbita Solar" }),
+    catalogo.getByRole("heading", { name: "Emerald Ape #042" }),
   ).toBeVisible();
   await race("arm");
 
   try {
-    await busca.fill("Maré");
+    await busca.fill("Sage");
     await expect.poll(() => race("status")).toBe("waiting");
 
-    await busca.fill("Jade");
+    await busca.fill("Neon");
     await expect(jade).toBeVisible();
     await expect(catalogo.locator(".card")).toHaveCount(1);
     await expect
       .poll(() => new URL(page.url()).searchParams.get("q"))
-      .toBe("Jade");
+      .toBe("Neon");
   } finally {
     await race("release");
   }
 
   await expect.poll(() => race("status")).toBe("finished");
-  await expect(busca).toHaveValue("Jade");
+  await expect(busca).toHaveValue("Neon");
   await expect(jade).toBeVisible();
   await expect(mare).toHaveCount(0);
   await expect(catalogo.locator(".card")).toHaveCount(1);
   await expect
     .poll(() => new URL(page.url()).searchParams.get("q"))
-    .toBe("Jade");
+    .toBe("Neon");
 });
 
 test("skeleton do catálogo respeita movimento reduzido durante a mesma consulta", async ({
@@ -116,7 +123,7 @@ test("skeleton do catálogo respeita movimento reduzido durante a mesma consulta
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/nft/1");
   await expect(
-    page.getByRole("heading", { name: "Órbita Solar" }),
+    page.getByRole("heading", { name: "Emerald Ape #042" }),
   ).toBeVisible();
 
   await scenario(page, "arm");
@@ -159,7 +166,7 @@ test("eventos de preço duplicado e antigo preservam a versão atual", async ({
       name: "Subtotal · " + value + " ETH",
       exact: true,
     });
-  await expect(subtotal("0.32")).toBeVisible();
+  await expect(subtotal("1.19")).toBeVisible();
 
   const send = (action: string) =>
     page.evaluate(async (action) => {
@@ -168,10 +175,10 @@ test("eventos de preço duplicado e antigo preservam a versão atual", async ({
       return result.json();
     }, action);
   await send("price");
-  await expect(subtotal("0.36")).toBeVisible();
+  await expect(subtotal("1.29")).toBeVisible();
   await send("price");
-  await expect(subtotal("0.32")).toBeVisible();
+  await expect(subtotal("1.19")).toBeVisible();
   expect(await send("replay-price")).toEqual({ replayed: 2 });
-  await expect(subtotal("0.32")).toBeVisible();
-  await expect(subtotal("0.36")).toHaveCount(0);
+  await expect(subtotal("1.19")).toBeVisible();
+  await expect(subtotal("1.29")).toHaveCount(0);
 });

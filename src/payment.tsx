@@ -8,35 +8,90 @@ import axios, { type AxiosInstance } from "axios";
 import type { Quote, Order, Purchase } from "./model";
 type Attempt = { id: string; input: Purchase };
 function Amounts({ quote }: { quote: Quote }) {
+  const tokenIds: Record<string, string> = {
+    "1": "#0042",
+    "2": "#0009",
+    "3": "#0552",
+    "4": "#0118",
+    "5": "#0314",
+    "6": "#0088",
+    "7": "#0207",
+    "8": "#0160",
+  };
+
   return (
-    <>
+    <div className="checkout-amounts">
+      <div className="checkout-items-labels" aria-hidden="true">
+        <strong>NFTs</strong>
+        <strong>Subtotal</strong>
+      </div>
+
       <ul className="quote-items">
-        {quote.lines.map((line) => (
-          <li key={line.id}>
-            <img
-              src={artSrc(line.nft.artworkId ?? line.nft.id)}
-              alt=""
-              width={52}
-              height={52}
-            />
-            <span>
-              {line.quantity} × {line.nft.title}{" "}
-              {line.nft.edition && "· " + line.nft.edition} · {line.nft.price}{" "}
-              ETH por unidade
-            </span>
-          </li>
-        ))}
+        {quote.lines.map((line) => {
+          const artworkId = line.nft.artworkId ?? line.nft.id;
+
+          return (
+            <li key={line.id}>
+              <img
+                src={artSrc(artworkId)}
+                alt=""
+                width={60}
+                height={60}
+              />
+              <span className="quote-item-name">
+                <strong>{line.nft.title}</strong>
+                <small>
+                  ID do token: {tokenIds[artworkId] ?? `#${artworkId}`}
+                </small>
+              </span>
+              <span className="quote-item-quantity">
+                (× {line.quantity})
+              </span>
+              <strong className="quote-item-total">
+                {(Number(line.nft.price) * line.quantity).toFixed(2)} ETH
+              </strong>
+            </li>
+          );
+        })}
       </ul>
-      <p>Subtotal · {quote.subtotal} ETH</p>
-      {quote.coupon && (
-        <>
-          <p>Cupom aplicado · {quote.coupon}</p>
-          <p>Desconto · {quote.discount} ETH</p>
-        </>
-      )}
-      <p>Taxa de rede · {quote.fee} ETH</p>
-      <h2>Total · {quote.total} ETH</h2>
-    </>
+
+      <p className="checkout-coupon-hint">
+        Tem um código promocional? Aplique aqui
+      </p>
+
+      <div className="checkout-totals">
+        <p>
+          <span>Subtotal<span className="payment-separator"> · </span></span>
+          <strong>{quote.subtotal} ETH</strong>
+        </p>
+
+        {quote.coupon && (
+          <p>
+            <span>Desconto do lançamento<span className="payment-separator"> · </span></span>
+            <strong>(-) {quote.discount}</strong>
+          </p>
+        )}
+
+        {!quote.coupon && (
+          <p>
+            <span>Desconto do lançamento<span className="payment-separator"> · </span></span>
+            <strong>(-) 00.00</strong>
+          </p>
+        )}
+
+        <p>
+          <span>Taxa de rede<span className="payment-separator"> · </span></span>
+          <strong>{quote.fee} ETH</strong>
+        </p>
+
+        <small>Taxa estimada</small>
+
+        <h2>
+          <span>Total<span className="payment-separator"> · </span></span>
+          <strong>{quote.total} ETH</strong>
+        </h2>
+      </div>
+    </div>
   );
 }
 export function Payment({
@@ -50,6 +105,10 @@ export function Payment({
 }) {
   const storage = "forma:attempt:" + owner;
   const [selectedWalletId, setSelectedWalletId] = useState("");
+  const [useOtherWallet, setUseOtherWallet] = useState(false);
+  const [paymentProvider, setPaymentProvider] = useState<
+    "walletconnect" | "metamask" | "coinbase"
+  >("coinbase");
   const [network, setNetwork] = useState("Ethereum Demo");
   const [timeoutAfterOrder, setTimeoutAfterOrder] = useState(false);
   const [declineConnection, setDeclineConnection] = useState(false);
@@ -73,6 +132,18 @@ export function Payment({
         }>("/checkout", { signal })
       ).data,
   });
+  useEffect(() => {
+    if (!data.data || selectedWalletId) return;
+
+    const defaultWallet =
+      data.data.wallets.find((item) => item.id === data.data?.wallet) ??
+      data.data.wallets[0];
+
+    if (defaultWallet) {
+      setSelectedWalletId(defaultWallet.id);
+    }
+  }, [data.data, selectedWalletId]);
+
   const connection = useMutation({
     mutationFn: async () =>
       (
@@ -84,7 +155,13 @@ export function Payment({
       ).data,
     onSuccess: (result) => {
       connect(result.connected);
-      setNotice("");
+
+      if (result.connected && data.data?.quote) {
+        setReview(data.data.quote);
+        setNotice("Carteira conectada. Confira os valores e confirme a compra.");
+      } else {
+        setNotice("");
+      }
     },
     onError: (error) => {
       const message = axios.isAxiosError<{ message?: string }>(error)
@@ -208,113 +285,391 @@ export function Payment({
       </p>
     );
   const changed = review && review.revision !== quote.revision;
+
+  const selectedWallet =
+    data.data.wallets.find(
+      (item) => item.id === (selectedWalletId || wallet),
+    ) ?? data.data.wallets[0];
+
+  const paymentActionName = !connected
+    ? "Conectar carteira simulada"
+    : review && !changed
+      ? "Confirmar compra"
+      : "Revisar compra";
+
+  const handlePaymentAction = () => {
+    if (!connected) {
+      connection.mutate();
+      return;
+    }
+
+    if (!review || changed) {
+      setReview(quote);
+      setNotice("Confira os itens e o total antes de confirmar.");
+      return;
+    }
+
+    pay.mutate();
+  };
+
   return (
-    <section className="checkout">
+    <section className="checkout checkout-figma">
       <div className="breadcrumbs">
         <a href="/">Início</a> / Mercado / Pagamento
       </div>
-      <div className="checkout-title">
-        <div>
-          <small>CHECKOUT SEGURO</small>
-          <h1>Pagamento</h1>
-        </div>
-        <p>Revise sua carteira e confirme a aquisição dos NFTs.</p>
-      </div>
 
-      <ol className="checkout-steps" aria-label="Etapas do pagamento">
-        <li className="complete">
-          <span>1</span>
-          Carrinho
-        </li>
-        <li className="active">
-          <span>2</span>
-          Pagamento
-        </li>
-        <li>
-          <span>3</span>
-          Confirmação
-        </li>
-      </ol>
+      {/* === KURIO: PAGAMENTO MOBILE === */}
+      <section
+        className="checkout-mobile-wallet"
+        aria-label="Pagamento com carteira"
+      >
+        <header className="checkout-mobile-header">
+          <a
+            href="/carrinho"
+            className="checkout-mobile-back"
+            aria-label="Voltar ao carrinho"
+          >
+            ‹
+          </a>
 
-      <div className="checkout-grid">
-        <section className="checkout-form">
-          <div className="checkout-section-heading">
-            <span aria-hidden="true">W</span>
-            <div>
-              <small>CARTEIRA DIGITAL</small>
-              <h2>Perfil do colecionador</h2>
-            </div>
-          </div>
-          <dl className="collector-details">
-            <div>
-              <dt>Nome de exibição</dt>
-              <dd>{name}</dd>
-            </div>
-            <div>
-              <dt>Endereço da carteira</dt>
-              <dd>
-                {
-                  data.data.wallets.find(
-                    (item) => item.id === (selectedWalletId || wallet),
-                  )?.address
-                }
-              </dd>
-            </div>
-          </dl>
-          <label>
-            Carteira
-            <select
-              disabled={connected || connection.isPending}
-              aria-label="Carteira"
-              value={selectedWalletId || wallet}
-              onChange={(event) => {
-                setSelectedWalletId(event.target.value);
-                setReview(null);
-              }}
-            >
-              {data.data.wallets.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.label} · {item.address.slice(-8)}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Rede
-            <select
-              aria-label="Rede"
-              disabled={connected || connection.isPending}
-              value={network}
-              onChange={(event) => {
-                setNetwork(event.target.value);
-                setReview(null);
-              }}
-            >
-              <option>Ethereum Demo</option>
-              <option>Ethereum Testnet Demo</option>
-            </select>
-          </label>
+          <h1>Pagamento com carteira</h1>
+        </header>
+
+        <div className="checkout-mobile-heading">
+          <h2>Carteira conectada</h2>
+
           <button
-            disabled={connection.isPending}
+            type="button"
+            disabled={connection.isPending || pay.isPending}
             onClick={() => {
-              setReview(null);
-              if (connected) {
+              const currentIndex = data.data.wallets.findIndex(
+                (item) => item.id === selectedWallet?.id,
+              );
+
+              const nextWallet =
+                data.data.wallets[
+                  (currentIndex + 1) % data.data.wallets.length
+                ];
+
+              if (nextWallet) {
+                setSelectedWalletId(nextWallet.id);
                 connect(false);
-                setNotice("");
-              } else {
-                connection.mutate();
+                setReview(null);
+                setNotice(`${nextWallet.label} selecionada.`);
               }
             }}
           >
-            {connected ? "Desconectar carteira" : "Conectar carteira simulada"}
+            Trocar carteira
           </button>
+        </div>
 
-          <p role="status">
+        <div
+          className="checkout-mobile-wallet-list"
+          role="radiogroup"
+          aria-label="Carteiras cadastradas"
+        >
+          {data.data.wallets.slice(0, 2).map((item, index) => {
+            const selected = item.id === selectedWallet?.id;
+            const walletTitle =
+              item.label?.trim() ||
+              (index === 0 ? "Principal" : "Reserva");
+
+            const shortAddress =
+              item.address.length > 15
+                ? `${item.address.slice(0, 7)}…${item.address.slice(-4)}`
+                : item.address;
+
+            return (
+              <button
+                key={item.id}
+                type="button"
+                className={selected ? "selected" : undefined}
+                role="radio"
+                aria-checked={selected}
+                disabled={connection.isPending || pay.isPending}
+                onClick={() => {
+                  setSelectedWalletId(item.id);
+                  connect(false);
+                  setReview(null);
+                  setNotice(`${walletTitle} selecionada.`);
+                }}
+              >
+                <span className="checkout-mobile-radio" aria-hidden="true" />
+
+                <span className="checkout-mobile-wallet-copy">
+                  <strong>{walletTitle}</strong>
+                  <span>{shortAddress}</span>
+                  <small>
+                    Rede {network.replace(" Demo", "")}
+                  </small>
+                </span>
+
+                <span
+                  className="checkout-mobile-wallet-menu"
+                  aria-hidden="true"
+                >
+                  ⋮
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <h2 className="checkout-mobile-network-title">
+          Carteira e rede
+        </h2>
+
+        <div
+          className="checkout-mobile-provider-list"
+          role="radiogroup"
+          aria-label="Forma de conexão"
+        >
+          {(
+            [
+              {
+                id: "walletconnect",
+                label: "WalletConnect",
+                symbol: "W",
+              },
+              {
+                id: "metamask",
+                label: "MetaMask",
+                symbol: "M",
+              },
+              {
+                id: "coinbase",
+                label: "Coinbase Wallet",
+                symbol: "▱",
+              },
+            ] as const
+          ).map((provider) => {
+            const selected = paymentProvider === provider.id;
+
+            return (
+              <button
+                key={provider.id}
+                type="button"
+                className={selected ? "selected" : undefined}
+                role="radio"
+                aria-checked={selected}
+                disabled={connection.isPending || pay.isPending}
+                onClick={() => {
+                  const walletOption =
+                    provider.id === "coinbase"
+                      ? data.data.wallets[1] ?? data.data.wallets[0]
+                      : data.data.wallets[0];
+
+                  if (!walletOption) {
+                    setNotice("Nenhuma carteira disponível.");
+                    return;
+                  }
+
+                  setPaymentProvider(provider.id);
+                  setSelectedWalletId(walletOption.id);
+                  setNetwork("Ethereum Demo");
+                  connect(false);
+                  setReview(null);
+                  setNotice(`${provider.label} selecionado.`);
+                }}
+              >
+                <span
+                  className="checkout-mobile-provider-icon"
+                  aria-hidden="true"
+                >
+                  {provider.symbol}
+                </span>
+
+                <strong>{provider.label}</strong>
+
+                <span
+                  className="checkout-mobile-provider-radio"
+                  aria-hidden="true"
+                />
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="checkout-mobile-total">
+          <strong>Total:</strong>
+          <span>{quote.total} ETH</span>
+        </div>
+
+        <p className="checkout-mobile-notice" role="status">
+          {changed ? "A cotação mudou. Revise o novo total." : notice}
+        </p>
+
+        <button
+          type="button"
+          className={`checkout-mobile-confirm${
+            connected && review && !changed
+              ? " checkout-mobile-confirm-ready"
+              : ""
+          }${
+            connection.isPending || pay.isPending
+              ? " checkout-mobile-confirm-loading"
+              : ""
+          }`}
+          aria-label={paymentActionName}
+          aria-live="polite"
+          disabled={
+            connection.isPending ||
+            pay.isPending ||
+            data.isFetching
+          }
+          onClick={handlePaymentAction}
+        >
+          {connection.isPending
+            ? "Conectando…"
+            : pay.isPending
+              ? "Processando…"
+              : connected && review && !changed
+                ? "Finalizar compra"
+                : "Confirmar compra"}
+        </button>
+      </section>
+      {/* === FIM: PAGAMENTO MOBILE === */}
+      <div className="checkout-grid">
+        <section className="checkout-form">
+          <h1>Perfil do colecionador</h1>
+
+          <div className="collector-form-grid">
+            <label>
+              Nome de exibição<span aria-hidden="true">*</span>
+              <input defaultValue={name} autoComplete="name" />
+            </label>
+
+            <label>
+              Nome de usuário<span aria-hidden="true">*</span>
+              <input defaultValue={name} autoComplete="username" />
+            </label>
+
+            <label>
+              Rede <span aria-hidden="true">*</span>
+              <select
+                aria-label="Rede"
+                disabled={connected || connection.isPending}
+                value={network}
+                onChange={(event) => {
+                  setNetwork(event.target.value);
+                  setReview(null);
+                }}
+              >
+                <option>Ethereum Demo</option>
+                <option>Ethereum Testnet Demo</option>
+              </select>
+            </label>
+
+            <label>
+              Nome do perfil<span aria-hidden="true">*</span>
+              <input defaultValue={name} />
+            </label>
+
+            <label>
+              Endereço da carteira<span aria-hidden="true">*</span>
+              <input
+                value={selectedWallet?.address ?? ""}
+                readOnly
+                aria-label="Endereço da carteira"
+              />
+            </label>
+
+            <label>
+              ENS ou carteira secundária (opcional)
+              <input placeholder="ENS ou carteira secundária (opcional)" />
+            </label>
+
+            <label>
+              Tipo de carteira<span aria-hidden="true">*</span>
+              <select
+                disabled={connected || connection.isPending}
+                aria-label="Carteira"
+                value={selectedWalletId || wallet}
+                onChange={(event) => {
+                  setSelectedWalletId(event.target.value);
+                  setReview(null);
+                }}
+              >
+                {data.data.wallets.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.label} · {item.address.slice(-8)}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label>
+              Código de indicação<span aria-hidden="true">*</span>
+              <input />
+            </label>
+
+            <label>
+              E-mail<span aria-hidden="true">*</span>
+              <input type="email" autoComplete="email" />
+            </label>
+
+            <label className="ens-field">
+              Nome ENS <span aria-hidden="true">*</span>
+              <span>
+                <input aria-label="Nome ENS" />
+                <b>.eth</b>
+              </span>
+            </label>
+          </div>
+
+          <label className="other-wallet-option">
+            <input
+              type="checkbox"
+              checked={useOtherWallet}
+              disabled={connected || connection.isPending}
+              onChange={(event) => {
+                const checked = event.target.checked;
+                setUseOtherWallet(checked);
+                setReview(null);
+
+                const primaryWallet =
+                  data.data.wallets.find(
+                    (item) => item.id === data.data.wallet,
+                  ) ?? data.data.wallets[0];
+
+                const secondaryWallet = data.data.wallets.find(
+                  (item) => item.id !== primaryWallet?.id,
+                );
+
+                if (checked) {
+                  if (secondaryWallet) {
+                    setSelectedWalletId(secondaryWallet.id);
+                    setNotice("Carteira alternativa selecionada.");
+                  } else {
+                    setUseOtherWallet(false);
+                    setNotice(
+                      "Cadastre uma carteira secundária antes de usar esta opção.",
+                    );
+                  }
+                } else if (primaryWallet) {
+                  setSelectedWalletId(primaryWallet.id);
+                  setNotice("Carteira principal selecionada.");
+                }
+              }}
+            />
+            Usar outra carteira?
+          </label>
+
+          <label className="collector-note">
+            Observação do colecionador (opcional)
+            <textarea rows={7} />
+          </label>
+
+          <p className="checkout-notice" role="status">
             {changed ? "A cotação mudou. Revise o novo total." : notice}
           </p>
-          <details>
+
+          <details className="checkout-failure-simulation">
             <summary>Simulação de falha</summary>
-            <label htmlFor="wallet-connection">Conexão da carteira</label>
+
+            <label htmlFor="wallet-connection">
+              Conexão da carteira
+            </label>
             <select
               id="wallet-connection"
               value={declineConnection ? "decline" : "allow"}
@@ -325,13 +680,16 @@ export function Payment({
               <option value="allow">Aceitar conexão</option>
               <option value="decline">Recusar conexão</option>
             </select>
+
             <label>
               Resultado do pagamento
               <select
                 value={outcome}
-                onChange={(e) =>
+                onChange={(event) =>
                   setOutcome(
-                    e.target.value === "declined" ? "declined" : "confirmed",
+                    event.target.value === "declined"
+                      ? "declined"
+                      : "confirmed",
                   )
                 }
               >
@@ -339,7 +697,10 @@ export function Payment({
                 <option value="declined">Recusar após 12 segundos</option>
               </select>
             </label>
-            <label htmlFor="order-response">Prazo da resposta do pedido</label>
+
+            <label htmlFor="order-response">
+              Prazo da resposta do pedido
+            </label>
             <select
               id="order-response"
               value={timeoutAfterOrder ? "timeout" : "normal"}
@@ -348,47 +709,148 @@ export function Payment({
               }
             >
               <option value="normal">Prazo normal</option>
-              <option value="timeout">Expirar após criar o pedido</option>
+              <option value="timeout">
+                Expirar após criar o pedido
+              </option>
             </select>
+
             <label>
               <input
                 type="checkbox"
                 checked={lose}
-                onChange={(e) => setLose(e.target.checked)}
+                onChange={(event) => setLose(event.target.checked)}
               />
               Perder resposta após criação do pedido
             </label>
           </details>
         </section>
+
         <aside className="checkout-summary">
-          <h2>{review ? "Revisão da compra" : "Seus NFTs"}</h2>
+          <h2>Seus NFTs</h2>
           <Amounts quote={quote} />
-          {review && !changed ? (
+
+          <h2 className="wallet-network-title">
+            Carteira e rede
+          </h2>
+
+          <div className="wallet-network-options">
             <button
-              className="action"
-              disabled={pay.isPending}
-              onClick={() => pay.mutate()}
-            >
-              Confirmar compra
-            </button>
-          ) : (
-            <button
-              className="action"
-              disabled={!connected || data.isFetching}
+              type="button"
+              className={`wallet-network-brands${
+                paymentProvider === "walletconnect" ? " selected" : ""
+              }`}
+              aria-pressed={paymentProvider === "walletconnect"}
+              disabled={connection.isPending || pay.isPending}
               onClick={() => {
-                setReview(quote);
-                setNotice("Confira os itens e o total antes de confirmar.");
+                const walletOption = data.data.wallets[0];
+
+                if (!walletOption) {
+                  setNotice("Nenhuma carteira disponível.");
+                  return;
+                }
+
+                setPaymentProvider("walletconnect");
+                setSelectedWalletId(walletOption.id);
+                setNetwork("Ethereum Demo");
+                connect(false);
+                setReview(null);
+                setNotice("WalletConnect selecionado.");
               }}
             >
-              Revisar compra
+              <span aria-hidden="true">
+                {paymentProvider === "walletconnect" ? "◉" : "○"}
+              </span>
+              METAMASK · WALLETCONNECT · COINBASE
             </button>
-          )}
+
+            <button
+              type="button"
+              className={paymentProvider === "metamask" ? "selected" : undefined}
+              aria-pressed={paymentProvider === "metamask"}
+              disabled={connection.isPending || pay.isPending}
+              onClick={() => {
+                const walletOption = data.data.wallets[0];
+
+                if (!walletOption) {
+                  setNotice("Nenhuma carteira disponível.");
+                  return;
+                }
+
+                setPaymentProvider("metamask");
+                setSelectedWalletId(walletOption.id);
+                setNetwork("Ethereum Demo");
+                connect(false);
+                setReview(null);
+                setNotice("MetaMask selecionada.");
+              }}
+            >
+              <span aria-hidden="true">
+                {paymentProvider === "metamask" ? "◉" : "○"}
+              </span>
+              MetaMask
+            </button>
+
+            <button
+              type="button"
+              className={paymentProvider === "coinbase" ? "selected" : undefined}
+              aria-pressed={paymentProvider === "coinbase"}
+              disabled={connection.isPending || pay.isPending}
+              onClick={() => {
+                const walletOption =
+                  data.data.wallets[1] ?? data.data.wallets[0];
+
+                if (!walletOption) {
+                  setNotice("Nenhuma carteira disponível.");
+                  return;
+                }
+
+                setPaymentProvider("coinbase");
+                setSelectedWalletId(walletOption.id);
+                setNetwork("Ethereum Demo");
+                connect(false);
+                setReview(null);
+                setNotice("Coinbase Wallet selecionada.");
+              }}
+            >
+              <span aria-hidden="true">
+                {paymentProvider === "coinbase" ? "◉" : "○"}
+              </span>
+              Coinbase Wallet
+            </button>
+          </div>
+
+          <button
+            className={`action checkout-confirm-action${
+              connected && review && !changed
+                ? " checkout-confirm-ready"
+                : ""
+            }${
+              connection.isPending || pay.isPending
+                ? " checkout-confirm-loading"
+                : ""
+            }`}
+            aria-label={paymentActionName}
+            aria-live="polite"
+            disabled={
+              connection.isPending ||
+              pay.isPending ||
+              data.isFetching
+            }
+            onClick={handlePaymentAction}
+          >
+            {connection.isPending
+              ? "Conectando…"
+              : pay.isPending
+                ? "Processando…"
+                : connected && review && !changed
+                  ? "Finalizar compra"
+                  : "Confirmar compra"}
+          </button>
         </aside>
       </div>
     </section>
   );
 }
-
 export function Receipt({
   api,
   owner,
@@ -547,82 +1009,130 @@ export function Receipt({
     );
 
   return (
-    <section className="receipt-page">
-      <div className="breadcrumbs">
-        <a href="/">Início</a>
-        <span aria-hidden="true"> / </span>
-        <a href="/carrinho">Carrinho</a>
-        <span aria-hidden="true"> / </span>
-        Confirmação
-      </div>
+    <section className="receipt-page receipt-figma">
+      <article className="receipt-confirmation-card">
+        <a
+          className="receipt-close"
+          href="/"
+          aria-label="Fechar confirmação"
+        >
+          ×
+        </a>
 
-      <header className="receipt-success">
-        <div className="receipt-success-icon" aria-hidden="true">
-          ✓
+        <header className="receipt-confirmation-header">
+          <div className="receipt-thank-you-icon" aria-hidden="true">
+            <span>THANK</span>
+            <span>YOU</span>
+          </div>
+
+          <h1 className="visually-hidden">
+            Compra confirmada
+          </h1>
+
+          <p>Seus NFTs agora estão na sua carteira</p>
+        </header>
+
+        <dl className="receipt-confirmation-metadata">
+          <div>
+            <dt>ID da transação</dt>
+            <dd>{order.transaction.slice(0, 10)}…</dd>
+          </div>
+
+          <div>
+            <dt>Data</dt>
+            <dd>29 Jul. 2026</dd>
+          </div>
+
+          <div>
+            <dt>Total</dt>
+            <dd>{order.quote.total} ETH</dd>
+          </div>
+
+          <div>
+            <dt>Carteira</dt>
+            <dd>
+              {order.walletSnapshot?.label ?? order.wallet}
+            </dd>
+          </div>
+        </dl>
+
+        <div className="receipt-confirmation-body">
+          <h2>Detalhes da transação</h2>
+
+          <div className="receipt-confirmation-labels">
+            <span>NFTs</span>
+            <span>Edições</span>
+            <span>Subtotal</span>
+          </div>
+
+          <ul className="receipt-confirmation-items">
+            {order.quote.lines.map((line) => (
+              <li key={line.id}>
+                <img
+                  src={artSrc(line.nft.artworkId ?? line.nft.id)}
+                  alt=""
+                  width={46}
+                  height={46}
+                />
+
+                <span>
+                  <strong>{line.nft.title}</strong>
+                  <small>
+                    ID do token: #
+                    {(
+                      {
+                        "1": "0042",
+                        "2": "0009",
+                        "3": "0552",
+                        "4": "0118",
+                        "5": "0314",
+                        "6": "0088",
+                        "7": "0207",
+                        "8": "0160",
+                      } as Record<string, string>
+                    )[line.nft.artworkId ?? line.nft.id] ??
+                      (line.nft.artworkId ?? line.nft.id).padStart(4, "0")}
+                  </small>
+                </span>
+
+                <span>(× {line.quantity})</span>
+
+                <strong>
+                  {(Number(line.nft.price) * line.quantity).toFixed(2)} ETH
+                </strong>
+              </li>
+            ))}
+          </ul>
+
+          <div className="receipt-confirmation-totals">
+            <p>
+              <span>Taxa de rede</span>
+              <strong>{order.quote.fee} ETH</strong>
+            </p>
+
+            <p>
+              <span>Total</span>
+              <strong>{order.quote.total} ETH</strong>
+            </p>
+          </div>
+
+          <p className="receipt-confirmation-message">
+            Transação confirmada na Ethereum. A propriedade foi
+            transferida para sua carteira conectada e registrada na rede.
+          </p>
+
+          <a
+            className="action receipt-etherscan"
+            href={`https://etherscan.io/tx/${order.transaction}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Ver no Etherscan
+          </a>
         </div>
-        <small>PAGAMENTO APROVADO</small>
-        <h1>Compra confirmada</h1>
-        <p>Seus NFTs foram adicionados à carteira simulada.</p>
-      </header>
 
-      <div className="receipt-layout">
-        <article className="receipt-card">
-          <div className="receipt-card-heading">
-            <div>
-              <small>RESUMO DO PEDIDO</small>
-              <h2>Detalhes da transação</h2>
-            </div>
-            <span>Confirmado</span>
-          </div>
-
-          <dl className="receipt-metadata">
-            <div>
-              <dt>Pedido</dt>
-              <dd>{order.id}</dd>
-            </div>
-            <div>
-              <dt>Rede</dt>
-              <dd>Rede · {order.network}</dd>
-            </div>
-          </dl>
-
-          <div className="receipt-wallet">
-            {order.walletSnapshot ? (
-              <div aria-label="Carteira usada no pagamento">
-                <p>Carteira · {order.walletSnapshot.label}</p>
-                <p>Endereço · {order.walletSnapshot.address}</p>
-              </div>
-            ) : (
-              <p>Carteira · {order.wallet}</p>
-            )}
-          </div>
-
-          <a className="receipt-wallet-link" href="/carteiras">
-            Minhas carteiras
-          </a>
-
-          <p className="receipt-transaction">
-            Transação simulada · {order.transaction}
-          </p>
-
-          <div className="receipt-amounts">
-            <Amounts quote={order.quote} />
-          </div>
-        </article>
-
-        <aside className="receipt-next">
-          <span aria-hidden="true">K</span>
-          <h2>Agora eles são seus</h2>
-          <p>
-            As obras desta compra já aparecem na sua carteira simulada e no
-            histórico do colecionador.
-          </p>
-          <a className="action" href="/">
-            Voltar ao catálogo
-          </a>
-          <a href="/perfil">Ver meu perfil</a>
-        </aside>
-      </div>
+        <div className="receipt-confirmation-accent" aria-hidden="true" />
+      </article>
     </section>
   );
 }

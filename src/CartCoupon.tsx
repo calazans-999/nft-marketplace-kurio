@@ -67,8 +67,8 @@ export function CartCoupon({
           autoComplete="off"
           placeholder="Digite o código promocional..."
         />
-        <button type="submit" disabled={change.isPending || !code.trim()}>
-          Aplicar cupom
+        <button type="submit" aria-label="Aplicar cupom" disabled={change.isPending || !code.trim()}>
+          Aplicar
         </button>
       </form>
 
@@ -80,6 +80,9 @@ export function CartCoupon({
 
       <div aria-live="polite">
         {cart.coupon && <p>Cupom aplicado · {cart.coupon}</p>}
+        <h2 className="basket-subtotal">
+          Subtotal · {cart.subtotal} ETH
+        </h2>
         <p>Desconto · {cart.discount ?? "0.00"} ETH</p>
         <p>Taxa de rede · {cart.fee} ETH</p>
         <h2>Total · {cart.total} ETH</h2>

@@ -15,12 +15,14 @@ test("sessão expirada durante a revisão retoma o checkout e preserva o cupom",
 
   await page.goto("/nft/1");
   await page.getByRole("button", { name: "Adicionar ao carrinho" }).click();
-  await expect(page.locator(".detail [role=status]")).toContainText("Adicionado");
+  await expect(
+    page.getByRole("status").filter({ hasText: "Adicionado" }),
+  ).toBeVisible();
   await page.getByRole("link", { name: "Ver carrinho" }).click();
 
   await page.getByLabel("Código do cupom").fill("FORMA10");
   await page.getByRole("button", { name: "Aplicar cupom" }).click();
-  const total = page.getByRole("heading", { name: "Total · 0.298 ETH", exact: true });
+  const total = page.getByRole("heading", { name: "Total · 1.081 ETH", exact: true });
   await expect(total).toBeVisible();
 
   await page.getByRole("link", { name: "Ir para pagamento" }).click();
@@ -42,7 +44,7 @@ test("sessão expirada durante a revisão retoma o checkout e preserva o cupom",
   await page.getByRole("button", { name: "Entrar", exact: true }).click();
 
   await expect(page).toHaveURL(/\/pagamento$/);
-  await expect(page.getByText(/1\s*×\s*Órbita Solar/)).toBeVisible();
+  await expect(page.getByText(/1\s*×\s*Emerald Ape #042/)).toBeVisible();
   await expect(page.getByText("Cupom aplicado · FORMA10", { exact: true })).toBeVisible();
   await expect(total).toBeVisible();
 

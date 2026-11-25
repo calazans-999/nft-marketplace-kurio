@@ -35,13 +35,13 @@ export function DemoPanel({ api }: { api: AxiosInstance }) {
             disabled={command.isPending}
             onClick={() => command.mutate("price")}
           >
-            Alterar preço da Órbita Solar
+            Alterar preço da Emerald Ape #042
           </button>
           <button
             disabled={command.isPending}
             onClick={() => command.mutate("sold-out")}
           >
-            Esgotar edição original da Órbita Solar
+            Esgotar edição original da Emerald Ape #042
           </button>
           <button
             disabled={command.isPending}

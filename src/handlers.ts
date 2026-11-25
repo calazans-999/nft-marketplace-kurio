@@ -10,23 +10,72 @@ import { http, HttpResponse, delay } from "msw";
 import { ws } from "msw";
 import { toSocketIo } from "@mswjs/socket.io-binding";
 import type { Nft } from "./model";
-const titles = [
-  "Órbita Solar",
-  "Maré Lunar",
-  "Anel de Jade",
-  "Eclipse de Cobre",
-  "Pulso Violeta",
-  "Vórtice Boreal",
+const fixtures: Nft[] = [
+  {
+    id: "1",
+    title: "Emerald Ape #042",
+    price: "1.19",
+    stock: 2,
+    artist: "Nova Sato",
+    series: "Kurio Apes",
+  },
+  {
+    id: "2",
+    title: "Sage Nomad #009",
+    price: "1.69",
+    stock: 3,
+    artist: "Noa Lima",
+    series: "Nomads",
+  },
+  {
+    id: "3",
+    title: "Neon Vessel #552",
+    price: "1.99",
+    stock: 4,
+    artist: "Lia Costa",
+    series: "Kurio Apes",
+  },
+  {
+    id: "4",
+    title: "Cosmic Bloom #118",
+    price: "1.29",
+    stock: 5,
+    artist: "Noa Lima",
+    series: "Nomads",
+  },
+  {
+    id: "5",
+    title: "Violet Nomad #314",
+    price: "1.39",
+    stock: 6,
+    artist: "Lia Costa",
+    series: "Nomads",
+  },
+  {
+    id: "6",
+    title: "Ivory Baron #088",
+    price: "1.79",
+    stock: 7,
+    artist: "Nova Sato",
+    series: "Kurio Apes",
+  },
+  {
+    id: "7",
+    title: "Golden Beat #207",
+    price: "0.99",
+    stock: 8,
+    artist: "Nova Sato",
+    series: "Kurio Apes",
+  },
+  {
+    id: "8",
+    title: "Golden Signal #160",
+    price: "0.39",
+    stock: 9,
+    artist: "Lia Costa",
+    series: "Kurio Apes",
+  },
 ];
-const prices = ["0.32", "0.18", "0.45", "0.26", "0.09", "0.14"];
-const fixtures: Nft[] = titles.map((title, i) => ({
-  id: String(i + 1),
-  title,
-  price: prices[i],
-  stock: i + 2,
-  artist: ["Lia Costa", "Noa Lima"][i % 2],
-  series: ["Órbitas", "Ondas"][i % 2],
-}));
 const limited = fixtures.map((artwork) => ({
   ...artwork,
   id: artwork.id + "-limited",
@@ -36,7 +85,7 @@ const limited = fixtures.map((artwork) => ({
 }));
 function inventory(): Nft[] {
   const stored: Nft[] =
-    JSON.parse(localStorage.getItem("forma:inventory:v3") || "null") ??
+    JSON.parse(localStorage.getItem("forma:inventory:v5") || "null") ??
     fixtures;
   return structuredClone([
     ...stored,
@@ -46,7 +95,7 @@ function inventory(): Nft[] {
   ]);
 }
 function saveInventory(items: Nft[]) {
-  localStorage.setItem("forma:inventory:v3", JSON.stringify(items));
+  localStorage.setItem("forma:inventory:v5", JSON.stringify(items));
 }
 type Basket = Record<string, number>;
 
@@ -263,7 +312,7 @@ export const handlers = [
   http.post("/api/demo/price", () => {
     const nfts = inventory();
     const nft = nfts[0];
-    nft.price = nft.price === "0.32" ? "0.36" : "0.32";
+    nft.price = nft.price === "1.19" ? "1.29" : "1.19";
     saveInventory(nfts);
     const event = announceNft(nft.id);
     priceUpdates.push(event);
@@ -301,19 +350,24 @@ export const handlers = [
         const difference = toWei(a.price) - toWei(b.price);
         return difference < 0n ? -1 : difference > 0n ? 1 : 0;
       });
-    const start = (Math.max(1, Number(p.get("page")) || 1) - 1) * 4;
+    const pageSize = Math.min(
+      8,
+      Math.max(1, Number(p.get("limit")) || 4),
+    );
+    const start =
+      (Math.max(1, Number(p.get("page")) || 1) - 1) * pageSize;
     await delay(180);
     const race = catalogRace;
     if (
       race?.phase === "armed" &&
-      new URL(request.url).searchParams.get("q") === "Maré"
+      new URL(request.url).searchParams.get("q") === "Sage"
     ) {
       race.phase = "waiting";
       await race.wait;
       race.phase = "finished";
     }
     return HttpResponse.json({
-      items: list.slice(start, start + 4),
+      items: list.slice(start, start + pageSize),
       total: list.length,
     });
   }),

@@ -25,7 +25,7 @@ test("perfil persiste dados e avatar e permite entrar com a nova senha", async (
   await expect(dados.getByLabel("Nome", { exact: true })).toHaveValue("Colecionador Atualizado");
   await expect(dados.getByLabel("E-mail")).toHaveValue("perfil-editado@example.test");
   await expect(dados.getByLabel("Avatar")).toHaveValue("3");
-  await expect(dados.getByRole("img", { name: "Avatar selecionado: Anel de Jade" })).toBeVisible();
+  await expect(dados.getByRole("img", { name: "Avatar selecionado: Neon Vessel #552" })).toBeVisible();
 
   const senha = page.getByRole("form", { name: "Alteração de senha" });
   await senha.getByLabel("Senha atual").fill("Incorreta123");

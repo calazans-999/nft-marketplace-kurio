@@ -1,0 +1,3197 @@
+/*
+ * KURIO — camada mobile
+ * Este arquivo é carregado depois de style.css.
+ * Nenhuma regra fora do media query altera o desktop.
+ */
+
+.mobile-confirm-password {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  :root {
+    --mobile-bg: #100a08;
+    --mobile-surface: #28150f;
+    --mobile-surface-soft: #311a13;
+    --mobile-border: #63331e;
+    --mobile-orange: #df9148;
+    --mobile-text: #fff8f1;
+    --mobile-muted: #d5b88d;
+  }
+
+  html,
+  body,
+  #root {
+    width: 100%;
+    min-width: 0;
+    min-height: 100%;
+    margin: 0;
+    overflow-x: hidden;
+    background: var(--mobile-bg);
+  }
+
+  body {
+    color: var(--mobile-text);
+  }
+
+  /*
+   * Autenticação mobile
+   */
+
+  .auth-stage {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: auto !important;
+    background: var(--mobile-bg) !important;
+  }
+
+  .auth-marketplace-preview,
+  .auth-close,
+  .auth-tabs,
+  .auth-intro p,
+  .auth-hint {
+    display: none !important;
+  }
+
+  .auth-stage .auth-card,
+  .auth-stage .account.auth-page {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 72px 28px 34px !important;
+    border: 0 !important;
+    border-radius: 0 0 38px 38px !important;
+    box-shadow: none !important;
+    background: var(--mobile-bg) !important;
+  }
+
+  .auth-card::before,
+  .auth-card::after,
+  .auth-submit::before,
+  .auth-submit::after,
+  .auth-social button::before,
+  .auth-social button::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  .auth-brand {
+    display: block !important;
+    margin: 58px 0 86px !important;
+    color: var(--mobile-text) !important;
+    font-size: clamp(38px, 12vw, 54px) !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    letter-spacing: 4px !important;
+    text-align: center !important;
+  }
+
+  .auth-intro {
+    display: block !important;
+    margin: 0 0 36px !important;
+    text-align: center !important;
+  }
+
+  .auth-intro h1 {
+    margin: 0 !important;
+    color: var(--mobile-text) !important;
+    font-size: clamp(24px, 7vw, 34px) !important;
+    line-height: 1.25 !important;
+    letter-spacing: 1px !important;
+  }
+
+  .auth-card form {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .auth-card form > label,
+  .auth-password-field,
+  .mobile-confirm-password {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .auth-card form > label > input,
+  .auth-password-field input {
+    display: block !important;
+    width: 100% !important;
+    height: 58px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 48px 0 16px !important;
+    border: 1px solid var(--mobile-border) !important;
+    border-radius: 10px !important;
+    outline: none !important;
+    color: var(--mobile-text) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    font: inherit !important;
+    box-sizing: border-box !important;
+  }
+
+  .auth-card form > label:first-child input {
+    padding-right: 16px !important;
+  }
+
+  .auth-card input::placeholder {
+    color: var(--mobile-muted) !important;
+    opacity: 1 !important;
+  }
+
+  .auth-password-field {
+    position: relative !important;
+  }
+
+  .auth-password-toggle {
+    position: absolute !important;
+    top: 50% !important;
+    right: 13px !important;
+    width: 30px !important;
+    height: 30px !important;
+    padding: 5px !important;
+    border: 0 !important;
+    transform: translateY(-50%) !important;
+    color: var(--mobile-orange) !important;
+    background: transparent !important;
+  }
+
+  .auth-password-toggle svg {
+    width: 100% !important;
+    height: 100% !important;
+    fill: none !important;
+    stroke: currentColor !important;
+  }
+
+  .forgot-password {
+    align-self: flex-end !important;
+    margin: -2px 0 18px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    color: var(--mobile-orange) !important;
+    background: none !important;
+  }
+
+  .auth-submit {
+    width: 100% !important;
+    height: 60px !important;
+    margin: 20px 0 0 !important;
+    border: 0 !important;
+    border-radius: 11px !important;
+    color: #130b07 !important;
+    background: var(--mobile-orange) !important;
+    font-size: 17px !important;
+    font-weight: 800 !important;
+  }
+
+  .auth-divider {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+    width: 100% !important;
+    margin: 42px 0 20px !important;
+    color: var(--mobile-text) !important;
+  }
+
+  .auth-divider::before,
+  .auth-divider::after {
+    content: "" !important;
+    display: block !important;
+    flex: 1 !important;
+    height: 1px !important;
+    background: var(--mobile-border) !important;
+  }
+
+  .auth-social {
+    display: grid !important;
+    gap: 15px !important;
+    width: 100% !important;
+  }
+
+  .auth-social button {
+    display: grid !important;
+    grid-template-columns: 44px 1fr 44px !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: 54px !important;
+    padding: 0 15px !important;
+    border: 1px solid var(--mobile-border) !important;
+    border-radius: 8px !important;
+    color: var(--mobile-muted) !important;
+    background: transparent !important;
+    font-weight: 700 !important;
+  }
+
+  .auth-social button > span {
+    font-size: 22px !important;
+    color: var(--mobile-orange) !important;
+  }
+
+  .auth-switch {
+    margin: 70px 0 0 !important;
+    color: var(--mobile-muted) !important;
+    text-align: center !important;
+  }
+
+  .auth-switch a {
+    color: var(--mobile-muted) !important;
+    text-decoration: none !important;
+  }
+
+  .auth-provider-notice,
+  .auth-error {
+    margin: 12px 0 0 !important;
+    text-align: center !important;
+  }
+
+  .auth-register-card .auth-brand {
+    margin-bottom: 82px !important;
+  }
+
+  .auth-register-card .auth-intro {
+    margin-bottom: 34px !important;
+  }
+
+  .auth-register-card .auth-switch {
+    margin-top: 48px !important;
+  }
+
+  /*
+   * Detalhes do NFT
+   */
+
+  .detail {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background:
+      radial-gradient(circle at top, #3a1e15 0, #160c09 38%, #100a08 70%) !important;
+  }
+
+  .detail > .breadcrumbs,
+  .detail-thumbnails,
+  .expand-art,
+  .detail-rule,
+  .mobile-detail-fields,
+  .detail-share,
+  .nft-information,
+  .related-nfts {
+    display: none !important;
+  }
+
+  .detail-product {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    width: 100% !important;
+  }
+
+  .product-gallery,
+  .art-preview {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 66px 28px 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .art-preview img {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    border-radius: 24px 24px 0 0 !important;
+    object-fit: cover !important;
+  }
+
+  .detail-info {
+    position: relative !important;
+    z-index: 2 !important;
+    width: 100% !important;
+    margin: -2px 0 0 !important;
+    padding: 34px 24px 30px !important;
+    border-radius: 36px 36px 0 0 !important;
+    background: rgba(43, 23, 17, 0.98) !important;
+    box-sizing: border-box !important;
+  }
+
+  .detail-info h1 {
+    max-width: 70% !important;
+    margin: 0 0 26px !important;
+    font-size: 26px !important;
+    line-height: 1.2 !important;
+  }
+
+  .detail-price-row {
+    display: contents !important;
+  }
+
+  .detail-rating {
+    position: absolute !important;
+    top: 30px !important;
+    right: 24px !important;
+    width: auto !important;
+    max-width: 120px !important;
+    margin: 0 !important;
+    padding: 8px 11px !important;
+    border: 1px solid var(--mobile-orange) !important;
+    border-radius: 999px !important;
+    color: var(--mobile-text) !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+  }
+
+  .detail-rating span {
+    color: var(--mobile-orange) !important;
+  }
+
+  .detail-info .nft-price {
+    position: absolute !important;
+    right: 24px !important;
+    bottom: 157px !important;
+    margin: 0 !important;
+    color: var(--mobile-orange) !important;
+    font-size: 26px !important;
+  }
+
+  .detail-description {
+    margin-bottom: 22px !important;
+  }
+
+  .detail-description h2 {
+    display: none !important;
+  }
+
+  .detail-description p,
+  .detail-metadata {
+    color: var(--mobile-muted) !important;
+    font-size: 17px !important;
+    line-height: 1.55 !important;
+  }
+
+  .edition-options {
+    margin: 0 0 24px !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+
+  .edition-options legend {
+    margin-bottom: 12px !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+  }
+
+  .edition-options > div {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+
+  .edition-options button {
+    min-width: 0 !important;
+    padding: 8px 11px !important;
+    border: 1px solid var(--mobile-border) !important;
+    border-radius: 999px !important;
+    color: var(--mobile-muted) !important;
+    background: transparent !important;
+  }
+
+  .edition-options button.active {
+    border-color: var(--mobile-orange) !important;
+    color: var(--mobile-orange) !important;
+  }
+
+  .purchase-actions {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .detail-purchase-row {
+    display: grid !important;
+    grid-template-columns: 1fr 70px !important;
+    gap: 12px !important;
+    margin: 34px -24px -30px !important;
+    padding: 26px 24px 30px !important;
+    border-radius: 34px 34px 0 0 !important;
+    background: rgba(38, 20, 15, 0.98) !important;
+  }
+
+  .quantity-stepper {
+    grid-column: 1 / -1 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+    width: fit-content !important;
+  }
+
+  .quantity-stepper::before {
+    content: "Qtd." !important;
+    color: var(--mobile-muted) !important;
+    font-weight: 800 !important;
+  }
+
+  .quantity-stepper button {
+    width: 38px !important;
+    height: 38px !important;
+    border: 1px solid var(--mobile-border) !important;
+    border-radius: 999px !important;
+    color: #130b07 !important;
+    background: var(--mobile-orange) !important;
+    font-size: 25px !important;
+  }
+
+  .detail-buy-button {
+    grid-column: 1 !important;
+    height: 60px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    color: #130b07 !important;
+    background: var(--mobile-orange) !important;
+  }
+
+  .desktop-buy-label {
+    display: none !important;
+  }
+
+  .mobile-buy-label {
+    display: inline !important;
+  }
+
+  .detail-favorite {
+    grid-column: 2 !important;
+    position: static !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 70px !important;
+    height: 60px !important;
+    overflow: hidden !important;
+    border: 1px solid var(--mobile-border) !important;
+    border-radius: 999px !important;
+  }
+
+  .detail-favorite a,
+  .detail-favorite button {
+    display: grid !important;
+    place-items: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    border: 0 !important;
+    color: var(--mobile-muted) !important;
+    background: transparent !important;
+    font-size: 0 !important;
+  }
+
+  .detail-favorite a::first-letter,
+  .detail-favorite button::first-letter {
+    font-size: 28px !important;
+  }
+
+  /*
+   * Carrinho mobile
+   */
+
+  .cart-page {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 28px 0 0 !important;
+    background: var(--mobile-bg) !important;
+  }
+
+  .cart-page > .breadcrumbs,
+  .basket-labels,
+  .cart-recommendations {
+    display: none !important;
+  }
+
+  .mobile-cart-title {
+    display: block !important;
+    margin: 0 24px 28px !important;
+    text-align: center !important;
+    font-size: 27px !important;
+  }
+
+  .mobile-cart-title::before {
+    content: "‹" !important;
+    position: absolute !important;
+    left: 18px !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 42px !important;
+    height: 42px !important;
+    border: 1px solid var(--mobile-border) !important;
+    border-radius: 50% !important;
+    color: var(--mobile-muted) !important;
+    background: var(--mobile-surface) !important;
+  }
+
+  .basket-grid {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .basket-items {
+    display: grid !important;
+    gap: 18px !important;
+    padding: 0 28px !important;
+  }
+
+  .cart-row {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: 102px 1fr !important;
+    grid-template-rows: auto auto auto !important;
+    gap: 5px 14px !important;
+    min-height: 100px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+    background: var(--mobile-surface) !important;
+  }
+
+  .cart-product {
+    display: contents !important;
+  }
+
+  .cart-product img {
+    grid-column: 1 !important;
+    grid-row: 1 / 4 !important;
+    width: 102px !important;
+    height: 100% !important;
+    min-height: 112px !important;
+    border-radius: 18px 0 0 18px !important;
+    object-fit: cover !important;
+  }
+
+  .cart-product > div {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    padding: 14px 82px 0 0 !important;
+  }
+
+  .cart-product h3 {
+    margin: 0 0 6px !important;
+    font-size: 17px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .cart-product small {
+    color: var(--mobile-muted) !important;
+  }
+
+  .cart-price {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+  }
+
+  .cart-price small,
+  .cart-line-total {
+    display: none !important;
+  }
+
+  .cart-price strong {
+    color: var(--mobile-orange) !important;
+  }
+
+  .cart-quantity {
+    position: absolute !important;
+    top: 37px !important;
+    right: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .cart-quantity button {
+    width: 29px !important;
+    height: 29px !important;
+    padding: 0 !important;
+    border: 1px solid var(--mobile-border) !important;
+    border-radius: 50% !important;
+    color: var(--mobile-text) !important;
+    background: transparent !important;
+  }
+
+  .cart-quantity button:last-child:not(:disabled) {
+    color: #130b07 !important;
+    background: var(--mobile-orange) !important;
+  }
+
+  .cart-remove {
+    position: absolute !important;
+    top: 7px !important;
+    right: 7px !important;
+    width: 28px !important;
+    height: 28px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    color: var(--mobile-orange) !important;
+    background: transparent !important;
+  }
+
+  .basket-summary {
+    width: 100% !important;
+    margin: 10px 0 0 !important;
+    padding: 26px 24px 34px !important;
+    border: 0 !important;
+    border-radius: 34px 34px 0 0 !important;
+    background: linear-gradient(180deg, #28150f, #1b0f0c) !important;
+    box-sizing: border-box !important;
+  }
+
+  .basket-summary > h2 {
+    display: none !important;
+  }
+
+  .basket-summary section form {
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    width: 100% !important;
+    margin-bottom: 25px !important;
+  }
+
+  .basket-summary section form label {
+    display: none !important;
+  }
+
+  .basket-summary section form input {
+    min-width: 0 !important;
+    height: 52px !important;
+    padding: 0 14px !important;
+    border: 1px solid var(--mobile-border) !important;
+    border-radius: 999px 0 0 999px !important;
+    color: var(--mobile-text) !important;
+    background: transparent !important;
+  }
+
+  .basket-summary section form button {
+    min-width: 100px !important;
+    height: 52px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    color: var(--mobile-text) !important;
+    background: #9f6637 !important;
+  }
+
+  .basket-summary section form button::before,
+  .basket-summary section form button::after {
+    content: none !important;
+  }
+
+  .basket-summary section [aria-live="polite"] {
+    display: grid !important;
+    gap: 12px !important;
+  }
+
+  .basket-summary section [aria-live="polite"] > * {
+    margin: 0 !important;
+    padding-bottom: 10px !important;
+    border-bottom: 1px solid rgba(223, 145, 72, 0.25) !important;
+  }
+
+  .basket-summary section [aria-live="polite"] h2:last-child {
+    color: var(--mobile-orange) !important;
+    font-size: 22px !important;
+  }
+
+  .checkout-action {
+    display: grid !important;
+    place-items: center !important;
+    width: 100% !important;
+    height: 62px !important;
+    margin: 30px 0 14px !important;
+    border-radius: 999px !important;
+    color: #130b07 !important;
+    background: var(--mobile-orange) !important;
+  }
+
+  .continue-shopping {
+    display: block !important;
+    text-align: center !important;
+    color: var(--mobile-orange) !important;
+  }
+
+  .empty-cart {
+    width: calc(100% - 48px) !important;
+    margin: 40px 24px !important;
+    padding: 36px 20px !important;
+    border: 1px solid var(--mobile-border) !important;
+    border-radius: 22px !important;
+    background: var(--mobile-surface) !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+  }
+
+  /*
+   * Pagamento: somente a versão mobile fica visível.
+   */
+
+  .checkout.checkout-figma {
+    width: 100% !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: var(--mobile-bg) !important;
+  }
+
+  .checkout-figma > .breadcrumbs,
+  .checkout-figma > .checkout-grid {
+    display: none !important;
+  }
+
+  .checkout-mobile-wallet {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    min-height: 100dvh !important;
+    padding: 32px 28px 26px !important;
+    background: var(--mobile-bg) !important;
+    box-sizing: border-box !important;
+  }
+
+  .checkout-mobile-confirm {
+    margin-top: auto !important;
+  }
+
+  /*
+   * Remove textos duplicados criados por ajustes antigos.
+   */
+
+  .checkout-action::before,
+  .checkout-action::after,
+  .checkout-mobile-confirm::before,
+  .checkout-mobile-confirm::after,
+  #cart-coupon + button::before,
+  #cart-coupon + button::after {
+    content: none !important;
+    display: none !important;
+  }
+}
+
+/* =========================================================
+   KURIO — CORREÇÃO FINAL DO CADASTRO MOBILE
+   Mantém o desktop intacto
+   ========================================================= */
+
+@media (max-width: 600px) {
+  html body:has(.auth-register-stage),
+  html body:has(.auth-login-stage) {
+    min-width: 0 !important;
+    width: 100% !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    overflow-x: hidden !important;
+    background: #100a08 !important;
+  }
+
+  html body:has(.auth-stage) #root {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    background: #100a08 !important;
+  }
+
+  html body:has(.auth-stage) .site-header,
+  html body:has(.auth-stage) .site-footer,
+  html body:has(.auth-stage) .mobile-tab-bar,
+  html body:has(.auth-stage) .auth-marketplace-preview,
+  html body:has(.auth-stage) .auth-close,
+  html body:has(.auth-stage) .auth-tabs,
+  html body:has(.auth-stage) .auth-intro > p,
+  html body:has(.auth-stage) .auth-hint {
+    display: none !important;
+  }
+
+  html body:has(.auth-stage) main#content {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #100a08 !important;
+  }
+
+  html body:has(.auth-stage) section.auth-stage {
+    position: relative !important;
+    inset: auto !important;
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 100dvh !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #100a08 !important;
+  }
+
+  html body:has(.auth-stage) section.auth-stage > .account.auth-card {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 100dvh !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 54px 28px 32px !important;
+    border: 0 !important;
+    border-radius: 0 0 36px 36px !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    background: #100a08 !important;
+    box-sizing: border-box !important;
+    transform: none !important;
+  }
+
+  html body:has(.auth-stage) .auth-card::before,
+  html body:has(.auth-stage) .auth-card::after,
+  html body:has(.auth-stage) .auth-submit::before,
+  html body:has(.auth-stage) .auth-submit::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  html body:has(.auth-stage) .auth-brand {
+    display: block !important;
+    order: 1 !important;
+    width: 100% !important;
+    margin: 24px 0 76px !important;
+    padding: 0 !important;
+    color: #fff8f1 !important;
+    font-size: 46px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    letter-spacing: 4px !important;
+    text-align: center !important;
+  }
+
+  html body:has(.auth-stage) .auth-intro {
+    display: block !important;
+    order: 2 !important;
+    width: 100% !important;
+    margin: 0 0 32px !important;
+    padding: 0 !important;
+    text-align: center !important;
+  }
+
+  html body:has(.auth-stage) .auth-intro h1 {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #fff8f1 !important;
+    font-size: 25px !important;
+    font-weight: 800 !important;
+    line-height: 1.3 !important;
+    letter-spacing: 0.5px !important;
+    text-align: center !important;
+  }
+
+  html body:has(.auth-stage) .auth-card > form {
+    display: flex !important;
+    order: 3 !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body:has(.auth-stage) .auth-card form > label,
+  html body:has(.auth-stage) .mobile-confirm-password {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: transparent !important;
+    font-size: 0 !important;
+  }
+
+  html body:has(.auth-stage) .auth-password-field {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  html body:has(.auth-stage) .auth-card form input {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 58px !important;
+    margin: 0 !important;
+    padding: 0 50px 0 16px !important;
+    border: 1px solid #63331e !important;
+    border-radius: 10px !important;
+    outline: 0 !important;
+    color: #fff8f1 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    font-family: inherit !important;
+    font-size: 15px !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.auth-stage) .auth-card form > label:first-child input {
+    padding-right: 16px !important;
+  }
+
+  html body:has(.auth-stage) .auth-card form input::placeholder {
+    color: #d5b88d !important;
+    opacity: 1 !important;
+  }
+
+  html body:has(.auth-stage) .auth-password-toggle {
+    position: absolute !important;
+    top: 50% !important;
+    right: 13px !important;
+    z-index: 2 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 32px !important;
+    height: 32px !important;
+    margin: 0 !important;
+    padding: 6px !important;
+    border: 0 !important;
+    transform: translateY(-50%) !important;
+    color: #df9148 !important;
+    background: transparent !important;
+  }
+
+  html body:has(.auth-stage) .auth-password-toggle svg {
+    display: block !important;
+    width: 20px !important;
+    height: 20px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+  }
+
+  html body:has(.auth-stage) .auth-submit {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 60px !important;
+    margin: 14px 0 0 !important;
+    padding: 0 18px !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    color: #130b07 !important;
+    background: #df9148 !important;
+    font-family: inherit !important;
+    font-size: 17px !important;
+    font-weight: 800 !important;
+    line-height: 60px !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.auth-stage) .auth-divider {
+    display: flex !important;
+    order: 4 !important;
+    align-items: center !important;
+    gap: 14px !important;
+    width: 100% !important;
+    margin: 38px 0 20px !important;
+    color: #fff8f1 !important;
+    font-size: 14px !important;
+    white-space: nowrap !important;
+  }
+
+  html body:has(.auth-stage) .auth-divider::before,
+  html body:has(.auth-stage) .auth-divider::after {
+    content: "" !important;
+    display: block !important;
+    flex: 1 1 auto !important;
+    height: 1px !important;
+    background: #63331e !important;
+  }
+
+  html body:has(.auth-stage) .auth-social {
+    display: grid !important;
+    order: 5 !important;
+    gap: 14px !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  html body:has(.auth-stage) .auth-social button {
+    display: grid !important;
+    grid-template-columns: 42px 1fr 42px !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 54px !important;
+    margin: 0 !important;
+    padding: 0 14px !important;
+    border: 1px solid #63331e !important;
+    border-radius: 8px !important;
+    color: #d5b88d !important;
+    background: transparent !important;
+    font-family: inherit !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+  }
+
+  html body:has(.auth-stage) .auth-social button > span {
+    color: #df9148 !important;
+    font-size: 21px !important;
+    text-align: left !important;
+  }
+
+  html body:has(.auth-stage) .auth-provider-notice {
+    order: 6 !important;
+    min-height: 0 !important;
+    margin: 10px 0 0 !important;
+    color: #df9148 !important;
+    font-size: 12px !important;
+    text-align: center !important;
+  }
+
+  html body:has(.auth-stage) .auth-switch {
+    display: block !important;
+    order: 7 !important;
+    margin: 38px 0 0 !important;
+    color: #d5b88d !important;
+    font-size: 15px !important;
+    text-align: center !important;
+  }
+
+  html body:has(.auth-stage) .auth-switch a {
+    color: #d5b88d !important;
+    text-decoration: none !important;
+  }
+
+  html body:has(.auth-stage) .auth-error {
+    margin: 4px 0 !important;
+    color: #ffad72 !important;
+    font-size: 12px !important;
+    text-align: center !important;
+  }
+
+  html body:has(.auth-register-stage) .auth-switch {
+    margin-top: 34px !important;
+  }
+}
+
+/* Ajuste para celulares mais baixos, como 400 × 844 */
+@media (max-width: 600px) and (max-height: 860px) {
+  html body:has(.auth-stage) section.auth-stage > .account.auth-card {
+    padding-top: 34px !important;
+    padding-bottom: 26px !important;
+  }
+
+  html body:has(.auth-stage) .auth-brand {
+    margin-top: 12px !important;
+    margin-bottom: 48px !important;
+    font-size: 40px !important;
+  }
+
+  html body:has(.auth-stage) .auth-intro {
+    margin-bottom: 24px !important;
+  }
+
+  html body:has(.auth-stage) .auth-intro h1 {
+    font-size: 22px !important;
+  }
+
+  html body:has(.auth-stage) .auth-card form input {
+    height: 54px !important;
+  }
+
+  html body:has(.auth-stage) .auth-submit {
+    height: 56px !important;
+    line-height: 56px !important;
+  }
+
+  html body:has(.auth-stage) .auth-divider {
+    margin-top: 27px !important;
+    margin-bottom: 16px !important;
+  }
+
+  html body:has(.auth-stage) .auth-social button {
+    height: 52px !important;
+  }
+
+  html body:has(.auth-stage) .auth-switch {
+    margin-top: 24px !important;
+  }
+}
+
+/* =========================================================
+   KURIO — DETALHES DO NFT MOBILE
+   ========================================================= */
+
+.mobile-detail-back {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  html body:has(.detail) .site-header,
+  html body:has(.detail) .site-footer,
+  html body:has(.detail) .mobile-tab-bar {
+    display: none !important;
+  }
+
+  html body:has(.detail),
+  html body:has(.detail) #root,
+  html body:has(.detail) main#content {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+    background: #100a08 !important;
+  }
+
+  html body:has(.detail) section.detail {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background:
+      radial-gradient(circle at 50% 8%, #3a1e15 0, #180d0a 34%, #100a08 67%) !important;
+  }
+
+  html body:has(.detail) .detail > .breadcrumbs,
+  html body:has(.detail) .detail-thumbnails,
+  html body:has(.detail) .expand-art,
+  html body:has(.detail) .detail-rule,
+  html body:has(.detail) .mobile-detail-fields,
+  html body:has(.detail) .detail-share,
+  html body:has(.detail) .nft-information,
+  html body:has(.detail) .related-nfts,
+  html body:has(.detail) .detail-update-status,
+  html body:has(.detail) .detail-view-cart {
+    display: none !important;
+  }
+
+  html body:has(.detail) .detail-product {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  html body:has(.detail) .mobile-detail-back {
+    position: absolute !important;
+    top: 22px !important;
+    left: 24px !important;
+    z-index: 20 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 44px !important;
+    height: 44px !important;
+    padding: 0 0 4px !important;
+    border: 1px solid #63331e !important;
+    border-radius: 50% !important;
+    color: #d5b88d !important;
+    background: rgba(43, 23, 17, 0.95) !important;
+    font-size: 35px !important;
+    line-height: 1 !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.detail) .product-gallery {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 66px 28px 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.detail) .art-preview {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 24px 24px 0 0 !important;
+    overflow: hidden !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  html body:has(.detail) .art-preview::before,
+  html body:has(.detail) .art-preview::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  html body:has(.detail) .art-preview > img {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 24px 24px 0 0 !important;
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+
+  html body:has(.detail) .detail-info {
+    position: relative !important;
+    z-index: 5 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    margin: -1px 0 0 !important;
+    padding: 34px 24px 0 !important;
+    border: 0 !important;
+    border-radius: 38px 38px 0 0 !important;
+    overflow: visible !important;
+    background: #2a1711 !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.detail) .detail-info > h1 {
+    display: block !important;
+    width: calc(100% - 122px) !important;
+    max-width: none !important;
+    margin: 0 0 27px !important;
+    padding: 0 !important;
+    color: #fff8f1 !important;
+    font-size: 26px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+  }
+
+  html body:has(.detail) .detail-price-row {
+    display: contents !important;
+  }
+
+  html body:has(.detail) .detail-rating {
+    position: absolute !important;
+    top: 30px !important;
+    right: 24px !important;
+    display: block !important;
+    width: 110px !important;
+    max-width: 110px !important;
+    height: 42px !important;
+    margin: 0 !important;
+    padding: 9px 10px !important;
+    border: 1px solid #df9148 !important;
+    border-radius: 999px !important;
+    overflow: hidden !important;
+    color: #fff8f1 !important;
+    background: transparent !important;
+    font-size: 0 !important;
+    line-height: 20px !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.detail) .detail-rating::after {
+    content: "★ 4.8 (19)" !important;
+    display: block !important;
+    color: #fff8f1 !important;
+    font-size: 15px !important;
+    line-height: 21px !important;
+  }
+
+  html body:has(.detail) .detail-rating > span {
+    display: none !important;
+  }
+
+  html body:has(.detail) .detail-description {
+    display: block !important;
+    order: 2 !important;
+    margin: 0 0 22px !important;
+    padding: 0 !important;
+  }
+
+  html body:has(.detail) .detail-description h2 {
+    display: none !important;
+  }
+
+  html body:has(.detail) .detail-description p {
+    display: block !important;
+    margin: 0 !important;
+    color: #d5b88d !important;
+    font-size: 17px !important;
+    line-height: 1.55 !important;
+  }
+
+  html body:has(.detail) .purchase-actions {
+    display: contents !important;
+  }
+
+  html body:has(.detail) .edition-options {
+    display: block !important;
+    order: 3 !important;
+    width: 100% !important;
+    margin: 0 0 22px !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+
+  html body:has(.detail) .edition-options legend {
+    display: block !important;
+    margin: 0 0 12px !important;
+    padding: 0 !important;
+    color: #fff8f1 !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+  }
+
+  html body:has(.detail) .edition-options > div {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+
+  html body:has(.detail) .edition-options button {
+    display: inline-grid !important;
+    place-items: center !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: 38px !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    border: 1px solid #63331e !important;
+    border-radius: 999px !important;
+    color: #d5b88d !important;
+    background: transparent !important;
+    font-size: 15px !important;
+  }
+
+  html body:has(.detail) .edition-options button.active {
+    border-color: #df9148 !important;
+    color: #df9148 !important;
+  }
+
+  html body:has(.detail) .detail-metadata {
+    display: block !important;
+    order: 4 !important;
+    width: 100% !important;
+    margin: 0 0 15px !important;
+    padding: 0 !important;
+    color: #d5b88d !important;
+    font-size: 16px !important;
+    line-height: 1.45 !important;
+  }
+
+  html body:has(.detail) .detail-purchase-row {
+    position: relative !important;
+    order: 5 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 64px !important;
+    gap: 14px !important;
+    width: calc(100% + 48px) !important;
+    min-width: 0 !important;
+    margin: 24px -24px 0 !important;
+    padding: 25px 24px 30px !important;
+    border: 0 !important;
+    border-radius: 34px 34px 0 0 !important;
+    background: #25140f !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.detail) .quantity-stepper {
+    grid-column: 1 / -1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 13px !important;
+    width: 100% !important;
+    height: 45px !important;
+    margin: 0 !important;
+    padding: 0 145px 0 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.detail) .quantity-stepper::before {
+    content: "Qtd." !important;
+    display: inline !important;
+    color: #d5b88d !important;
+    font-size: 17px !important;
+    font-weight: 800 !important;
+  }
+
+  html body:has(.detail) .quantity-stepper button {
+    display: grid !important;
+    place-items: center !important;
+    width: 38px !important;
+    min-width: 38px !important;
+    height: 38px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid #63331e !important;
+    border-radius: 50% !important;
+    color: #130b07 !important;
+    background: #df9148 !important;
+    font-size: 24px !important;
+    line-height: 1 !important;
+  }
+
+  html body:has(.detail) .quantity-stepper output {
+    min-width: 18px !important;
+    color: #fff8f1 !important;
+    font-size: 18px !important;
+    text-align: center !important;
+  }
+
+  html body:has(.detail) .detail-info .nft-price {
+    position: absolute !important;
+    right: 24px !important;
+    bottom: 137px !important;
+    z-index: 8 !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #df9148 !important;
+    font-size: 24px !important;
+    line-height: 38px !important;
+  }
+
+  html body:has(.detail) .detail-buy-button {
+    grid-column: 1 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 60px !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    color: #130b07 !important;
+    background: #df9148 !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+  }
+
+  html body:has(.detail) .detail-buy-button::before,
+  html body:has(.detail) .detail-buy-button::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  html body:has(.detail) .desktop-buy-label {
+    display: none !important;
+  }
+
+  html body:has(.detail) .mobile-buy-label {
+    display: inline !important;
+    color: inherit !important;
+    font-size: inherit !important;
+  }
+
+  html body:has(.detail) .detail-favorite {
+    position: absolute !important;
+    top: -538px !important;
+    right: 24px !important;
+    z-index: 25 !important;
+    grid-column: auto !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 44px !important;
+    height: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid #63331e !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    background: rgba(43, 23, 17, 0.95) !important;
+  }
+
+  html body:has(.detail) .detail-favorite a,
+  html body:has(.detail) .detail-favorite button {
+    display: grid !important;
+    place-items: center !important;
+    width: 44px !important;
+    height: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    color: #df9148 !important;
+    background: transparent !important;
+    font-size: 0 !important;
+    text-decoration: none !important;
+  }
+
+  html body:has(.detail) .detail-favorite a::after,
+  html body:has(.detail) .detail-favorite button::after {
+    content: "♡" !important;
+    display: block !important;
+    color: #df9148 !important;
+    font-size: 27px !important;
+    line-height: 1 !important;
+  }
+
+  html body:has(.detail) .detail-favorite a::before,
+  html body:has(.detail) .detail-favorite button::before {
+    content: none !important;
+    display: none !important;
+  }
+}
+
+/* =========================================================
+   KURIO — CARRINHO MOBILE NO PADRÃO DO FIGMA
+   ========================================================= */
+
+.mobile-cart-header,
+.mobile-cart-back {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  html body:has(.cart-page),
+  html body:has(.cart-page) #root,
+  html body:has(.cart-page) main#content {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+    background: #100a08 !important;
+  }
+
+  html body:has(.cart-page) .cart-page {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 32px 0 0 !important;
+    background: #100a08 !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .mobile-cart-header {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 54px !important;
+    margin: 0 0 24px !important;
+    padding: 0 26px !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .mobile-cart-back {
+    position: absolute !important;
+    top: 5px !important;
+    left: 26px !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 44px !important;
+    height: 44px !important;
+    padding: 0 0 4px !important;
+    border: 1px solid #63331e !important;
+    border-radius: 50% !important;
+    color: #d5b88d !important;
+    background: #2a1711 !important;
+    font-size: 34px !important;
+    line-height: 1 !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .mobile-cart-title {
+    display: block !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #fff8f1 !important;
+    font-size: 25px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+  }
+
+  html body:has(.cart-page) .mobile-cart-title::before,
+  html body:has(.cart-page) .mobile-cart-title::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  html body:has(.cart-page) .basket-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body:has(.cart-page) .basket-items {
+    display: grid !important;
+    gap: 20px !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 28px !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) article.cart-row {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: 104px minmax(0, 1fr) !important;
+    grid-template-rows: 42px 27px 35px !important;
+    gap: 0 14px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 104px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+    background: #2a1711 !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .cart-product {
+    display: contents !important;
+  }
+
+  html body:has(.cart-page) .cart-product > img {
+    grid-column: 1 !important;
+    grid-row: 1 / 4 !important;
+    display: block !important;
+    width: 104px !important;
+    height: 104px !important;
+    min-width: 104px !important;
+    max-width: 104px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 18px 0 0 18px !important;
+    object-fit: cover !important;
+  }
+
+  html body:has(.cart-page) .cart-product > div {
+    grid-column: 2 !important;
+    grid-row: 1 / 3 !important;
+    display: block !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 15px 96px 0 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .cart-product h3 {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 0 5px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    color: #fff8f1 !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    line-height: 20px !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+  }
+
+  html body:has(.cart-page) .cart-product small {
+    display: block !important;
+    margin: 0 !important;
+    color: #d5b88d !important;
+    font-size: 13px !important;
+    line-height: 18px !important;
+  }
+
+  html body:has(.cart-page) .cart-price {
+    grid-column: 2 !important;
+    grid-row: 3 !important;
+    align-self: center !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 95px 12px 0 !important;
+  }
+
+  html body:has(.cart-page) .cart-price small {
+    display: none !important;
+  }
+
+  html body:has(.cart-page) .cart-price strong {
+    display: block !important;
+    color: #df9148 !important;
+    font-size: 17px !important;
+    line-height: 22px !important;
+  }
+
+  html body:has(.cart-page) .cart-quantity {
+    position: absolute !important;
+    top: 42px !important;
+    right: 10px !important;
+    z-index: 3 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 9px !important;
+    width: auto !important;
+    height: 34px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body:has(.cart-page) .cart-quantity button {
+    display: grid !important;
+    place-items: center !important;
+    flex: 0 0 auto !important;
+    width: 31px !important;
+    min-width: 31px !important;
+    height: 31px !important;
+    margin: 0 !important;
+    padding: 0 0 2px !important;
+    border: 1px solid #63331e !important;
+    border-radius: 50% !important;
+    color: #fff8f1 !important;
+    background: transparent !important;
+    font-size: 21px !important;
+    line-height: 1 !important;
+  }
+
+  html body:has(.cart-page) .cart-quantity button:last-child:not(:disabled) {
+    color: #130b07 !important;
+    border-color: #df9148 !important;
+    background: #df9148 !important;
+  }
+
+  html body:has(.cart-page) .cart-quantity button:disabled {
+    opacity: 0.42 !important;
+  }
+
+  html body:has(.cart-page) .cart-quantity output {
+    display: block !important;
+    min-width: 14px !important;
+    color: #fff8f1 !important;
+    font-size: 17px !important;
+    line-height: 31px !important;
+    text-align: center !important;
+  }
+
+  html body:has(.cart-page) .cart-line-total {
+    display: none !important;
+  }
+
+  html body:has(.cart-page) .cart-remove {
+    position: absolute !important;
+    top: 8px !important;
+    right: 8px !important;
+    z-index: 4 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 27px !important;
+    min-width: 27px !important;
+    height: 27px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    color: #df9148 !important;
+    background: transparent !important;
+    font-size: 0 !important;
+  }
+
+  html body:has(.cart-page) .cart-remove::after {
+    content: "×" !important;
+    display: block !important;
+    color: #df9148 !important;
+    font-size: 21px !important;
+    line-height: 1 !important;
+  }
+
+  html body:has(.cart-page) aside.basket-summary {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 10px 0 0 !important;
+    padding: 42px 24px 30px !important;
+    border: 0 !important;
+    border-radius: 34px 34px 0 0 !important;
+    background:
+      linear-gradient(180deg, #291710 0%, #21120e 100%) !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .basket-summary section {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  html body:has(.cart-page) .basket-summary section form {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 102px !important;
+    width: 100% !important;
+    height: 58px !important;
+    margin: 0 0 36px !important;
+    padding: 0 !important;
+    border: 1px solid #63331e !important;
+    border-radius: 999px !important;
+    overflow: hidden !important;
+    background: transparent !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .basket-summary section form input {
+    display: block !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    height: 56px !important;
+    margin: 0 !important;
+    padding: 0 10px 0 18px !important;
+    border: 0 !important;
+    border-radius: 999px 0 0 999px !important;
+    outline: 0 !important;
+    color: #fff8f1 !important;
+    background: transparent !important;
+    font-size: 13px !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .basket-summary section form input::placeholder {
+    color: #d5b88d !important;
+    opacity: 1 !important;
+  }
+
+  html body:has(.cart-page) .basket-summary section form button {
+    display: grid !important;
+    place-items: center !important;
+    width: 102px !important;
+    min-width: 102px !important;
+    height: 56px !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    color: #fff8f1 !important;
+    background: #9d653b !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+  }
+
+  html body:has(.cart-page) .basket-summary section form button::before,
+  html body:has(.cart-page) .basket-summary section form button::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  html body:has(.cart-page) .basket-summary section [aria-live="polite"] {
+    display: grid !important;
+    gap: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body:has(.cart-page)
+    .basket-summary
+    section
+    [aria-live="polite"] > * {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    min-height: 43px !important;
+    margin: 0 !important;
+    padding: 8px 0 !important;
+    border-top: 1px solid rgba(223, 145, 72, 0.27) !important;
+    border-bottom: 0 !important;
+    color: #fff8f1 !important;
+    font-size: 14px !important;
+    line-height: 1.35 !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page)
+    .basket-summary
+    section
+    [aria-live="polite"] > *:last-child {
+    min-height: 66px !important;
+    border-bottom: 1px solid rgba(223, 145, 72, 0.27) !important;
+    color: #df9148 !important;
+    font-size: 22px !important;
+    font-weight: 800 !important;
+  }
+
+  html body:has(.cart-page) .checkout-action {
+    display: grid !important;
+    place-items: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 62px !important;
+    margin: 48px 0 18px !important;
+    padding: 0 18px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    color: #130b07 !important;
+    background: #df9148 !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .continue-shopping {
+    display: block !important;
+    margin: 0 !important;
+    color: #df9148 !important;
+    font-size: 13px !important;
+    text-align: center !important;
+    text-decoration: none !important;
+  }
+}
+
+/* =========================================================
+   KURIO — BOTÕES DE VOLTAR MOBILE
+   ========================================================= */
+
+.mobile-profile-back {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  /*
+   * Carrinho
+   */
+
+  html body:has(.cart-page) .mobile-cart-header {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 48px !important;
+    margin: 0 0 26px !important;
+    padding: 0 24px !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .mobile-cart-back {
+    position: absolute !important;
+    top: 2px !important;
+    left: 24px !important;
+    z-index: 20 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    margin: 0 !important;
+    padding: 0 0 4px !important;
+    border: 1px solid #63331e !important;
+    border-radius: 50% !important;
+    color: #d5b88d !important;
+    background: #2a1711 !important;
+    box-shadow: none !important;
+    font-size: 34px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .mobile-cart-back:hover,
+  html body:has(.cart-page) .mobile-cart-back:focus-visible {
+    color: #fff8f1 !important;
+    border-color: #df9148 !important;
+    background: #3a1e15 !important;
+  }
+
+  html body:has(.cart-page) .mobile-cart-title {
+    width: calc(100% - 110px) !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    font-size: 25px !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+  }
+
+  /*
+   * Meu perfil
+   */
+
+  html body:has(.profile-figma-page) .site-header,
+  html body:has(.profile-figma-page) .site-footer,
+  html body:has(.profile-figma-page) .mobile-tab-bar {
+    display: none !important;
+  }
+
+  html body:has(.profile-figma-page),
+  html body:has(.profile-figma-page) #root,
+  html body:has(.profile-figma-page) main#content {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+    background: #100a08 !important;
+  }
+
+  html body:has(.profile-figma-page) .profile-figma-page {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding-top: 88px !important;
+    background: #100a08 !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.profile-figma-page) .mobile-profile-back {
+    position: absolute !important;
+    top: 28px !important;
+    left: 24px !important;
+    z-index: 30 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    margin: 0 !important;
+    padding: 0 0 4px !important;
+    border: 1px solid #63331e !important;
+    border-radius: 50% !important;
+    color: #d5b88d !important;
+    background: #2a1711 !important;
+    box-shadow: none !important;
+    font-size: 34px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.profile-figma-page) .mobile-profile-back:hover,
+  html body:has(.profile-figma-page) .mobile-profile-back:focus-visible {
+    color: #fff8f1 !important;
+    border-color: #df9148 !important;
+    background: #3a1e15 !important;
+  }
+
+  html body:has(.profile-figma-page) .profile-sidebar {
+    position: static !important;
+    width: calc(100% - 48px) !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 24px 22px !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.profile-figma-page) .profile-sidebar > h1 {
+    position: absolute !important;
+    top: 37px !important;
+    left: 88px !important;
+    right: 24px !important;
+    margin: 0 !important;
+    color: #fff8f1 !important;
+    font-size: 24px !important;
+    line-height: 32px !important;
+    text-align: center !important;
+  }
+
+  html body:has(.profile-figma-page) .profile-figma-content {
+    width: calc(100% - 48px) !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 24px !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* =========================================================
+   KURIO — CORREÇÃO DOS NÚMEROS DO CARRINHO
+   ========================================================= */
+
+@media (max-width: 600px) {
+  html body:has(.cart-page) article.cart-row {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: 104px minmax(0, 1fr) !important;
+    grid-template-rows: 46px 26px 46px !important;
+    column-gap: 14px !important;
+    row-gap: 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 118px !important;
+    min-height: 118px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+    contain: layout paint !important;
+    background: #2a1711 !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .cart-product {
+    display: contents !important;
+  }
+
+  html body:has(.cart-page) .cart-product > img {
+    grid-column: 1 !important;
+    grid-row: 1 / 4 !important;
+    display: block !important;
+    width: 104px !important;
+    min-width: 104px !important;
+    max-width: 104px !important;
+    height: 118px !important;
+    min-height: 118px !important;
+    max-height: 118px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 18px 0 0 18px !important;
+    object-fit: cover !important;
+  }
+
+  html body:has(.cart-page) .cart-product > div {
+    grid-column: 2 !important;
+    grid-row: 1 / 3 !important;
+    align-self: stretch !important;
+    display: block !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 14px 38px 0 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .cart-product h3 {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 0 5px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    color: #fff8f1 !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    line-height: 19px !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .cart-product small {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    color: #d5b88d !important;
+    font-size: 12px !important;
+    line-height: 17px !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+  }
+
+  html body:has(.cart-page) .cart-price {
+    grid-column: 2 !important;
+    grid-row: 3 !important;
+    align-self: center !important;
+    display: block !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 112px 10px 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .cart-price strong {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    color: #df9148 !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    line-height: 20px !important;
+    white-space: nowrap !important;
+  }
+
+  html body:has(.cart-page) .cart-quantity {
+    position: absolute !important;
+    top: auto !important;
+    right: 8px !important;
+    bottom: 12px !important;
+    left: auto !important;
+    z-index: 5 !important;
+    display: grid !important;
+    grid-template-columns: 29px 20px 29px !important;
+    align-items: center !important;
+    justify-content: end !important;
+    gap: 5px !important;
+    width: 88px !important;
+    min-width: 88px !important;
+    max-width: 88px !important;
+    height: 31px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .cart-quantity button {
+    display: grid !important;
+    place-items: center !important;
+    width: 29px !important;
+    min-width: 29px !important;
+    max-width: 29px !important;
+    height: 29px !important;
+    min-height: 29px !important;
+    max-height: 29px !important;
+    margin: 0 !important;
+    padding: 0 0 2px !important;
+    border: 1px solid #63331e !important;
+    border-radius: 50% !important;
+    color: #fff8f1 !important;
+    background: transparent !important;
+    font-size: 19px !important;
+    line-height: 1 !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .cart-quantity output {
+    display: block !important;
+    width: 20px !important;
+    min-width: 20px !important;
+    max-width: 20px !important;
+    height: 29px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    color: #fff8f1 !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    line-height: 29px !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .cart-remove {
+    position: absolute !important;
+    top: 7px !important;
+    right: 7px !important;
+    bottom: auto !important;
+    left: auto !important;
+    z-index: 7 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 27px !important;
+    min-width: 27px !important;
+    max-width: 27px !important;
+    height: 27px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body:has(.cart-page) .basket-items {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    padding-right: 28px !important;
+    padding-left: 28px !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* =========================================================
+   KURIO — REFINAMENTO FINAL DOS CARDS DO CARRINHO
+   ========================================================= */
+
+@media (max-width: 600px) {
+  html body:has(.cart-page) article.cart-row {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 118px !important;
+    min-height: 118px !important;
+    overflow: hidden !important;
+    border-radius: 18px !important;
+    background: #2a1711 !important;
+  }
+
+  html body:has(.cart-page) .cart-product {
+    display: block !important;
+    position: static !important;
+  }
+
+  html body:has(.cart-page) .cart-product > img {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    display: block !important;
+    width: 104px !important;
+    min-width: 104px !important;
+    max-width: 104px !important;
+    height: 118px !important;
+    min-height: 118px !important;
+    max-height: 118px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 18px 0 0 18px !important;
+    object-fit: cover !important;
+  }
+
+  html body:has(.cart-page) .cart-product > div {
+    position: absolute !important;
+    top: 13px !important;
+    right: 38px !important;
+    bottom: auto !important;
+    left: 118px !important;
+    display: block !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) .cart-product h3 {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 0 3px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    color: #fff8f1 !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    line-height: 19px !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+  }
+
+  html body:has(.cart-page) .cart-product small {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    color: #d5b88d !important;
+    font-size: 12px !important;
+    line-height: 17px !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+  }
+
+  html body:has(.cart-page) .cart-price {
+    position: absolute !important;
+    top: auto !important;
+    right: 106px !important;
+    bottom: 17px !important;
+    left: 118px !important;
+    display: block !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 22px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  html body:has(.cart-page) .cart-price strong {
+    display: block !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #df9148 !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    line-height: 22px !important;
+    white-space: nowrap !important;
+  }
+
+  html body:has(.cart-page) .cart-quantity {
+    position: absolute !important;
+    top: auto !important;
+    right: 8px !important;
+    bottom: 12px !important;
+    left: auto !important;
+    display: grid !important;
+    grid-template-columns: 29px 20px 29px !important;
+    align-items: center !important;
+    gap: 5px !important;
+    width: 88px !important;
+    min-width: 88px !important;
+    max-width: 88px !important;
+    height: 31px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body:has(.cart-page) .cart-remove {
+    position: absolute !important;
+    top: 5px !important;
+    right: 5px !important;
+    z-index: 10 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 30px !important;
+    min-width: 30px !important;
+    max-width: 30px !important;
+    height: 30px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    color: transparent !important;
+    background: transparent !important;
+    font-size: 0 !important;
+  }
+
+  html body:has(.cart-page) .cart-remove::before {
+    content: none !important;
+    display: none !important;
+  }
+
+  html body:has(.cart-page) .cart-remove::after {
+    content: "×" !important;
+    display: block !important;
+    width: 30px !important;
+    height: 30px !important;
+    color: #df9148 !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 21px !important;
+    font-weight: 400 !important;
+    line-height: 30px !important;
+    text-align: center !important;
+  }
+}
+
+/* =========================================================
+   KURIO — LIXEIRA DENTRO DO CARD DO CARRINHO
+   ========================================================= */
+
+@media (max-width: 600px) {
+  html body:has(.cart-page) article.cart-row {
+    position: relative !important;
+    overflow: hidden !important;
+    isolation: isolate !important;
+  }
+
+  html body:has(.cart-page) article.cart-row .cart-remove {
+    position: absolute !important;
+    inset: 6px 6px auto auto !important;
+    top: 6px !important;
+    right: 6px !important;
+    bottom: auto !important;
+    left: auto !important;
+    z-index: 50 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 30px !important;
+    min-width: 30px !important;
+    max-width: 30px !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-radius: 50% !important;
+    outline: 0 !important;
+    color: transparent !important;
+    background: rgba(42, 23, 17, 0.96) !important;
+    box-shadow: none !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    translate: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) article.cart-row .cart-remove::before {
+    content: none !important;
+    display: none !important;
+  }
+
+  html body:has(.cart-page) article.cart-row .cart-remove::after {
+    content: "×" !important;
+    position: static !important;
+    display: block !important;
+    width: 30px !important;
+    height: 30px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #df9148 !important;
+    background: transparent !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 21px !important;
+    font-weight: 400 !important;
+    line-height: 28px !important;
+    text-align: center !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  html body:has(.cart-page) article.cart-row .cart-remove:hover,
+  html body:has(.cart-page) article.cart-row .cart-remove:focus-visible {
+    background: #452319 !important;
+  }
+
+  html body:has(.cart-page) article.cart-row .cart-remove:hover::after,
+  html body:has(.cart-page) article.cart-row .cart-remove:focus-visible::after {
+    color: #ffad72 !important;
+  }
+
+  /* Reserva espaço para a lixeira sem cortar o título. */
+  html body:has(.cart-page) article.cart-row .cart-product > div {
+    right: 38px !important;
+  }
+}
+
+/* =========================================================
+   KURIO — EDIÇÃO ABAIXO DO NOME
+   ========================================================= */
+
+@media (max-width: 600px) {
+  html body:has(.cart-page) article.cart-row .cart-product > div {
+    position: absolute !important;
+    top: 12px !important;
+    right: 40px !important;
+    bottom: auto !important;
+    left: 118px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 2px !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 46px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.cart-page) article.cart-row .cart-product h3 {
+    position: static !important;
+    inset: auto !important;
+    display: block !important;
+    flex: 0 0 20px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    color: #fff8f1 !important;
+    background: transparent !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    line-height: 20px !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    transform: none !important;
+  }
+
+  html body:has(.cart-page) article.cart-row .cart-product small {
+    position: static !important;
+    inset: auto !important;
+    display: block !important;
+    flex: 0 0 18px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 18px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    color: #d5b88d !important;
+    background: transparent !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 18px !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    transform: none !important;
+  }
+
+  html body:has(.cart-page) article.cart-row .cart-price {
+    position: absolute !important;
+    top: auto !important;
+    right: 108px !important;
+    bottom: 16px !important;
+    left: 118px !important;
+    height: 22px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+  }
+
+  html body:has(.cart-page) article.cart-row .cart-remove {
+    text-indent: -9999px !important;
+    white-space: nowrap !important;
+  }
+
+  html body:has(.cart-page) article.cart-row .cart-remove::after {
+    content: "×" !important;
+    text-indent: 0 !important;
+  }
+}
+
+/* =========================================================
+   KURIO — PAGAMENTO ALINHADO AO TOPO
+   ========================================================= */
+
+@media (max-width: 600px) {
+  html body:has(.checkout-figma),
+  html body:has(.checkout-figma) #root,
+  html body:has(.checkout-figma) main#content {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 100dvh !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+    background: #100a08 !important;
+  }
+
+  html body:has(.checkout-figma) .checkout.checkout-figma {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 100dvh !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #100a08 !important;
+  }
+
+  html body:has(.checkout-figma) .checkout-mobile-wallet {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 100dvh !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 30px 28px 26px !important;
+    overflow: visible !important;
+    background: #100a08 !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.checkout-figma) .checkout-mobile-header {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-height: 48px !important;
+    margin: 0 0 26px !important;
+    padding: 0 44px !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.checkout-figma) .checkout-mobile-header h1 {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #fff8f1 !important;
+    font-size: 25px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+  }
+
+  html body:has(.checkout-figma) .checkout-mobile-back {
+    position: absolute !important;
+    top: 2px !important;
+    left: 0 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    margin: 0 !important;
+    padding: 0 0 4px !important;
+    border: 1px solid #63331e !important;
+    border-radius: 50% !important;
+    color: #d5b88d !important;
+    background: #2a1711 !important;
+    font-size: 34px !important;
+    line-height: 1 !important;
+    text-decoration: none !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.checkout-figma) .checkout-mobile-heading {
+    margin-top: 0 !important;
+  }
+
+  html body:has(.checkout-figma) .checkout-mobile-wallet-list,
+  html body:has(.checkout-figma) .checkout-mobile-network-title,
+  html body:has(.checkout-figma) .checkout-mobile-provider-list,
+  html body:has(.checkout-figma) .checkout-mobile-total,
+  html body:has(.checkout-figma) .checkout-mobile-notice {
+    flex: 0 0 auto !important;
+  }
+
+  html body:has(.checkout-figma) .checkout-mobile-confirm {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    min-height: 60px !important;
+    margin: auto 0 0 !important;
+    border-radius: 999px !important;
+  }
+}
+
+/* =========================================================
+   KURIO — BOTÃO CONFIRMAR DENTRO DA TELA
+   ========================================================= */
+
+@media (max-width: 600px) {
+  html body:has(.checkout-figma) .checkout-mobile-confirm {
+    position: static !important;
+    inset: auto !important;
+    align-self: center !important;
+    flex: 0 0 auto !important;
+    display: grid !important;
+    place-items: center !important;
+    width: calc(100vw - 56px) !important;
+    min-width: 0 !important;
+    max-width: calc(100vw - 56px) !important;
+    height: 60px !important;
+    min-height: 60px !important;
+    max-height: 60px !important;
+    margin: auto auto 2px !important;
+    padding: 0 20px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    color: #130b07 !important;
+    background: #df9148 !important;
+    box-shadow: none !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    transform: none !important;
+    translate: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.checkout-figma) .checkout-mobile-confirm::before,
+  html body:has(.checkout-figma) .checkout-mobile-confirm::after {
+    content: none !important;
+    display: none !important;
+  }
+}
+
+/* =========================================================
+   KURIO — CORAÇÃO COM ESTADO REAL
+   ========================================================= */
+
+@media (max-width: 600px) {
+  html body:has(.detail) .detail-favorite {
+    overflow: visible !important;
+  }
+
+  html body:has(.detail) .detail-favorite > div,
+  html body:has(.detail) .detail-favorite .favorite-control {
+    position: relative !important;
+    display: block !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body:has(.detail) .detail-favorite .favorite-button,
+  html body:has(.detail) .detail-favorite .favorite-retry {
+    position: static !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-radius: 50% !important;
+    color: #df9148 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    font-size: 0 !important;
+    line-height: 1 !important;
+    text-indent: 0 !important;
+    opacity: 1 !important;
+    transform: none !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.detail) .detail-favorite .favorite-button::before,
+  html body:has(.detail) .detail-favorite .favorite-button::after,
+  html body:has(.detail) .detail-favorite .favorite-retry::before,
+  html body:has(.detail) .detail-favorite .favorite-retry::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  html body:has(.detail) .detail-favorite .favorite-icon,
+  html body:has(.detail) .detail-favorite .favorite-loading {
+    position: static !important;
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #df9148 !important;
+    background: transparent !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 28px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+    text-indent: 0 !important;
+    transform: none !important;
+  }
+
+  html body:has(.detail)
+    .detail-favorite
+    .favorite-button.favorite-selected
+    .favorite-icon {
+    color: #df9148 !important;
+    text-shadow: 0 0 10px rgba(223, 145, 72, 0.35) !important;
+  }
+
+  html body:has(.detail) .detail-favorite .favorite-text {
+    display: none !important;
+  }
+
+  html body:has(.detail) .detail-favorite .favorite-button:disabled {
+    cursor: wait !important;
+    opacity: 0.55 !important;
+  }
+
+  html body:has(.detail) .detail-favorite .favorite-error {
+    position: absolute !important;
+    top: 50px !important;
+    right: 0 !important;
+    z-index: 40 !important;
+    width: 220px !important;
+    margin: 0 !important;
+    padding: 9px 11px !important;
+    border: 1px solid #63331e !important;
+    border-radius: 8px !important;
+    color: #ffad72 !important;
+    background: #2a1711 !important;
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+    text-align: left !important;
+  }
+}
+
+/* =========================================================
+   KURIO — NAVEGAÇÃO DAS PÁGINAS DA CONTA
+   ========================================================= */
+
+.mobile-account-back {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  /*
+   * Organiza o menu principal do perfil
+   */
+
+  html body:has(.profile-figma-page)
+    .profile-sidebar {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: calc(100% - 48px) !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 24px 22px !important;
+    padding: 0 !important;
+    border: 1px solid #63331e !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+    background: #2a1711 !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.profile-figma-page)
+    .profile-sidebar > h1 {
+    position: absolute !important;
+    top: 37px !important;
+    right: 24px !important;
+    left: 88px !important;
+    display: block !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    color: #fff8f1 !important;
+    background: transparent !important;
+    font-size: 24px !important;
+    line-height: 32px !important;
+    text-align: center !important;
+  }
+
+  html body:has(.profile-figma-page)
+    .profile-sidebar > a {
+    display: flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    width: auto !important;
+    min-width: 0 !important;
+    min-height: 53px !important;
+    margin: 0 !important;
+    padding: 11px 13px !important;
+    border: 0 !important;
+    border-right: 1px solid #63331e !important;
+    border-bottom: 1px solid #63331e !important;
+    border-radius: 0 !important;
+    color: #df9148 !important;
+    background: transparent !important;
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.profile-figma-page)
+    .profile-sidebar > a:nth-of-type(even) {
+    border-right: 0 !important;
+  }
+
+  html body:has(.profile-figma-page)
+    .profile-sidebar > a.active {
+    background: #8e4f2d !important;
+    color: #fff8f1 !important;
+  }
+
+  /*
+   * Suporte é a sétima opção. Ocupa as duas colunas para
+   * não deixar uma célula vazia do lado direito.
+   */
+
+  html body:has(.profile-figma-page)
+    .profile-sidebar > a:nth-of-type(7) {
+    grid-column: 1 / -1 !important;
+    border-right: 0 !important;
+  }
+
+  html body:has(.profile-figma-page)
+    .profile-sidebar > button {
+    grid-column: 1 / -1 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    width: 100% !important;
+    min-height: 49px !important;
+    margin: 0 !important;
+    padding: 11px 13px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    color: #df9148 !important;
+    background: transparent !important;
+    font-family: inherit !important;
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+    text-align: left !important;
+    box-sizing: border-box !important;
+  }
+
+  /*
+   * Páginas internas da conta
+   */
+
+  html body:has(.wallets-figma-page),
+  html body:has(.account-basic-page),
+  html body:has(.wallets-figma-page) #root,
+  html body:has(.account-basic-page) #root,
+  html body:has(.wallets-figma-page) main#content,
+  html body:has(.account-basic-page) main#content {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+    background: #100a08 !important;
+  }
+
+  html body:has(.wallets-figma-page) .site-header,
+  html body:has(.wallets-figma-page) .site-footer,
+  html body:has(.account-basic-page) .site-header,
+  html body:has(.account-basic-page) .site-footer,
+  html body:has(.wallets-figma-page) .mobile-tab-bar,
+  html body:has(.account-basic-page) .mobile-tab-bar {
+    display: none !important;
+  }
+
+  html body:has(.wallets-figma-page)
+    .wallets-figma-page,
+  html body:has(.account-basic-page)
+    .account-basic-page {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 88px 24px 30px !important;
+    background: #100a08 !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.wallets-figma-page)
+    .mobile-account-back,
+  html body:has(.account-basic-page)
+    .mobile-account-back {
+    position: absolute !important;
+    top: 28px !important;
+    left: 24px !important;
+    z-index: 50 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    margin: 0 !important;
+    padding: 0 0 4px !important;
+    border: 1px solid #63331e !important;
+    border-radius: 50% !important;
+    color: #d5b88d !important;
+    background: #2a1711 !important;
+    font-size: 34px !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body:has(.wallets-figma-page)
+    .mobile-account-back:hover,
+  html body:has(.wallets-figma-page)
+    .mobile-account-back:focus-visible,
+  html body:has(.account-basic-page)
+    .mobile-account-back:hover,
+  html body:has(.account-basic-page)
+    .mobile-account-back:focus-visible {
+    color: #fff8f1 !important;
+    border-color: #df9148 !important;
+    background: #3a1e15 !important;
+  }
+}

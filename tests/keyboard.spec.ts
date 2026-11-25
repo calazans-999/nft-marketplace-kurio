@@ -11,7 +11,7 @@ async function chegarComTab(page: Page, alvo: Locator, limite = 30) {
 
 test("teclado permite pular o menu, buscar uma obra e adicioná-la ao carrinho", async ({ page }, testInfo) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Órbita Solar", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Emerald Ape #042", exact: true })).toBeVisible();
 
   const salto = page.getByRole("link", { name: "Pular para o conteúdo" });
   await page.keyboard.press("Tab");
@@ -23,23 +23,42 @@ test("teclado permite pular o menu, buscar uma obra e adicioná-la ao carrinho",
 
   const nomeDaBusca =
     testInfo.project.name === "mobile" ? "Busca rápida" : "Buscar obra";
+
+  if (testInfo.project.name === "desktop") {
+    const abrirBusca = page.getByRole("button", {
+      name: "Buscar no marketplace",
+    });
+
+    await abrirBusca.focus();
+    await expect(abrirBusca).toBeFocused();
+    await page.keyboard.press("Enter");
+  }
+
   const busca = page.getByRole("searchbox", { name: nomeDaBusca });
-  await chegarComTab(page, busca);
-  await page.keyboard.type("Jade");
+
+  if (testInfo.project.name === "mobile") {
+    await chegarComTab(page, busca);
+  } else {
+    await expect(busca).toBeFocused();
+  }
+
+  await page.keyboard.type("Neon");
 
   const catalogo = page.locator("#catalogo");
   await expect(catalogo.locator(".card")).toHaveCount(1);
-  const obra = catalogo.getByRole("link", { name: /Anel de Jade/ });
+  const obra = catalogo.getByRole("link", { name: /Neon Vessel #552/ });
   await chegarComTab(page, obra);
   await page.keyboard.press("Enter");
 
   await expect(page).toHaveURL(/\/nft\/3$/);
-  await expect(page.getByRole("heading", { name: "Anel de Jade", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Neon Vessel #552", exact: true })).toBeVisible();
 
   const adicionar = page.getByRole("button", { name: "Adicionar ao carrinho" });
   await chegarComTab(page, adicionar);
   await page.keyboard.press("Enter");
 
-  await expect(page.locator(".detail [role=status]")).toContainText("Adicionado");
+  await expect(
+    page.getByRole("status").filter({ hasText: "Adicionado" }),
+  ).toBeVisible();
   await expect(page.getByRole("link", { name: "Carrinho · 1", exact: true })).toBeVisible();
 });

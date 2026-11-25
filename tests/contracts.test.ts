@@ -22,15 +22,15 @@ before(() => server.listen({ onUnhandledRequest: "error" }));
 after(() => server.close());
 const url = (p: string) => "http://localhost/api/" + p;
 test("catálogo combina filtros e paginação", async () => {
-  const list = await (await fetch(url("nfts?series=Ondas&sort=price"))).json();
+  const list = await (await fetch(url("nfts?series=Nomads&sort=price"))).json();
   assert.equal(list.total, 3);
   assert.deepEqual(
     list.items.map((n: { price: string }) => n.price),
-    ["0.14", "0.18", "0.26"],
+    ["1.29", "1.39", "1.69"],
   );
   assert.equal(
     (await (await fetch(url("nfts?page=2"))).json()).items.length,
-    2,
+    4,
   );
   assert.equal((await fetch(url("nfts/absent"))).status, 404);
 });
@@ -41,9 +41,9 @@ test("limite de estoque, subtotal exato e remoção", async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantity }),
     });
-  assert.equal((await (await edit(2)).json()).subtotal, "0.64");
+  assert.equal((await (await edit(2)).json()).subtotal, "2.38");
   assert.equal((await edit(3)).status, 409);
-  assert.equal((await (await fetch(url("cart"))).json()).subtotal, "0.64");
+  assert.equal((await (await fetch(url("cart"))).json()).subtotal, "2.38");
   assert.equal((await (await edit(0)).json()).subtotal, "0.00");
 });
 test(
@@ -72,7 +72,7 @@ test(
         await fetch(url("demo/price"), { method: "POST" })
       ).json();
       assert.deepEqual(await event, response);
-      assert.equal((await (await fetch(url("nfts/1"))).json()).price, "0.36");
+      assert.equal((await (await fetch(url("nfts/1"))).json()).price, "1.29");
     } finally {
       socket.disconnect();
     }
@@ -435,8 +435,8 @@ test("cupom acompanha o visitante até o recibo e invalida a revisão antiga", a
   assert.equal(applied.status, 200);
   const basket = await applied.json();
   assert.equal(basket.coupon, "FORMA10");
-  assert.equal(basket.discount, "0.032");
-  assert.equal(basket.total, "0.298");
+  assert.equal(basket.discount, "0.119");
+  assert.equal(basket.total, "1.081");
 
   for (const [code, expected] of [
     ["NAOEXISTE", "INVALID_COUPON"],
@@ -469,12 +469,12 @@ test("cupom acompanha o visitante até o recibo e invalida a revisão antiga", a
   };
 
   const original = await checkout();
-  assert.equal(original.quote.total, "0.298");
+  assert.equal(original.quote.total, "1.081");
   assert.equal(original.quote.coupon, "FORMA10");
 
   const removed = await jsonRequest("cart-coupon", "DELETE", undefined, auth);
   assert.equal(removed.status, 200);
-  assert.equal((await removed.json()).total, "0.33");
+  assert.equal((await removed.json()).total, "1.20");
 
   const create = (revision: string, key: string) =>
     jsonRequest(
@@ -509,7 +509,7 @@ test("cupom acompanha o visitante até o recibo e invalida a revisão antiga", a
   const order = await receipt.json();
   assert.equal(order.status, "confirmed");
   assert.deepEqual(order.quote, fresh.quote);
-  assert.equal(order.quote.total, "0.298");
+  assert.equal(order.quote.total, "1.081");
 
   const empty = await (await fetch(url("cart"), { headers: auth })).json();
   assert.equal(empty.lines.length, 0);

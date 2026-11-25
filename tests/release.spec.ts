@@ -7,13 +7,13 @@ async function percorrerTelas(
   await page.goto("/");
   const catalogo = page.locator("#catalogo");
   await expect(
-    catalogo.getByRole("heading", { name: "Órbita Solar", exact: true }),
+    catalogo.getByRole("heading", { name: "Emerald Ape #042", exact: true }),
   ).toBeVisible();
   await conferir("inicio");
 
   await page.goto("/nft/1");
   await expect(
-    page.getByRole("heading", { name: "Órbita Solar", exact: true }),
+    page.getByRole("heading", { name: "Emerald Ape #042", exact: true }),
   ).toBeVisible();
   await conferir("detalhe");
 
@@ -24,7 +24,7 @@ async function percorrerTelas(
   await page.getByRole("link", { name: "Ver carrinho" }).click();
   await expect(
     page.getByRole("heading", {
-      name: "Subtotal · 0.32 ETH",
+      name: "Subtotal · 1.19 ETH",
       exact: true,
     }),
   ).toBeVisible();
@@ -39,7 +39,7 @@ async function percorrerTelas(
   await expect(page).toHaveURL(/\/pagamento$/);
   await expect(
     page.getByRole("heading", {
-      name: "Total · 0.33 ETH",
+      name: "Total · 1.20 ETH",
       exact: true,
     }),
   ).toBeVisible();
@@ -96,7 +96,7 @@ test("regressão visual de início, detalhe, carrinho e pagamento", async ({
       expect(saved).toBe(true);
       await page.reload();
       await expect(
-        page.getByRole("heading", { name: "Total · 0.33 ETH", exact: true }),
+        page.getByRole("heading", { name: "Total · 1.20 ETH", exact: true }),
       ).toBeVisible();
     }
     await page.evaluate(() => document.fonts.ready.then(() => undefined));

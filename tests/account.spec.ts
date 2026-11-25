@@ -19,7 +19,7 @@ test("cadastro retoma carrinho e logout separa o visitante", async ({
   await expect(page).toHaveURL(/\/carrinho$/);
   await page.reload();
   await expect(
-    page.getByRole("heading", { name: "Subtotal · 0.32 ETH" }),
+    page.getByRole("heading", { name: "Subtotal · 1.19 ETH" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Sair" }).click();
   await expect(

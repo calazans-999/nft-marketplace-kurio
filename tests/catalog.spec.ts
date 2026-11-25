@@ -13,11 +13,11 @@ test("Carrinho de visitante persiste e respeita o estoque", async ({
   await page.getByRole("link", { name: "Ver carrinho" }).click();
   await page.reload();
   await expect(
-    page.getByRole("heading", { name: "Subtotal · 0.64 ETH" }),
+    page.getByRole("heading", { name: "Subtotal · 2.38 ETH" }),
   ).toBeVisible();
   await page.getByLabel("Quantidade").selectOption("1");
   await expect(
-    page.getByRole("heading", { name: "Subtotal · 0.32 ETH" }),
+    page.getByRole("heading", { name: "Subtotal · 1.19 ETH" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Remover" }).click();
   await expect(
@@ -29,18 +29,45 @@ test("Consulta e paginação sobrevivem ao histórico e refresh", async (
   testInfo,
 ) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Próxima" }).click();
-  await expect(page.getByText("Página 2")).toBeVisible();
-  await page.getByLabel("Coleção", { exact: true }).selectOption("Ondas");
-  await expect(page.getByText("Página 1")).toBeVisible();
+  if (testInfo.project.name === "mobile") {
+    const proxima = page.getByRole("button", { name: "Próxima" });
+    await proxima.click();
+    await expect(page.getByText("Página 2")).toBeVisible();
+  } else {
+    await expect(page.locator("#catalogo .card")).toHaveCount(8);
+    await expect(
+      page.getByRole("button", { name: "1", exact: true }),
+    ).toHaveAttribute("aria-current", "page");
+
+    await page
+      .getByRole("button", { name: "Buscar no marketplace" })
+      .click();
+  }
+
+  const colecao =
+    testInfo.project.name === "mobile"
+      ? page.locator(".mobile-quick-filters").getByLabel("Coleção")
+      : page
+          .getByRole("dialog", { name: "Buscar no marketplace" })
+          .getByLabel("Coleção");
+
+  await colecao.selectOption("Nomads");
+
+  if (testInfo.project.name === "mobile") {
+    await expect(page.getByText("Página 1")).toBeVisible();
+  } else {
+    await expect(
+      page.getByRole("button", { name: "1", exact: true }),
+    ).toHaveAttribute("aria-current", "page");
+  }
   await page.getByLabel("Ordenar por").selectOption("price");
   const busca =
     testInfo.project.name === "mobile"
       ? page.getByRole("searchbox", { name: "Busca rápida" })
       : page.getByRole("searchbox", { name: "Buscar obra" });
-  await busca.fill("Maré");
+  await busca.fill("Sage");
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Maré Lunar" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Sage Nomad #009" })).toBeVisible();
   await expect(page.locator(".card")).toHaveCount(1);
   await page.goBack();
   await expect(page.locator(".card")).toHaveCount(3);
@@ -59,9 +86,9 @@ test("Evento de preço atualiza o subtotal aberto", async ({ page }) => {
     "Adicionado",
   );
   await page.getByRole("link", { name: "Ver carrinho" }).click();
-  await expect(page.getByText("Subtotal · 0.32 ETH")).toBeVisible();
+  await expect(page.getByText("Subtotal · 1.19 ETH")).toBeVisible();
   await page.evaluate(() => fetch("/api/demo/price", { method: "POST" }));
-  await expect(page.getByText("Subtotal · 0.36 ETH")).toBeVisible();
+  await expect(page.getByText("Subtotal · 1.29 ETH")).toBeVisible();
   await expect(
     page.getByText("Preço atualizado.", { exact: false }),
   ).toBeVisible();

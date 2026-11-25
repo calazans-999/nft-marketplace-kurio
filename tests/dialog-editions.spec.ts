@@ -7,7 +7,7 @@ test("diálogo da obra retém foco e a edição limitada pode ser adicionada", a
   const trigger = page.getByRole("button", { name: "Ampliar obra" });
   await trigger.focus();
   await page.keyboard.press("Enter");
-  const dialog = page.getByRole("dialog", { name: "Órbita Solar" });
+  const dialog = page.getByRole("dialog", { name: "Emerald Ape #042" });
   const close = dialog.getByRole("button", { name: "Fechar" });
   await expect(dialog).toBeVisible();
   await expect(close).toBeFocused();
@@ -23,7 +23,7 @@ test("diálogo da obra retém foco e a edição limitada pode ser adicionada", a
     "Adicionado",
   );
   await page.getByRole("link", { name: "Ver carrinho" }).click();
-  await expect(page.getByText("Limitada · 0.32 ETH por unidade")).toBeVisible();
+  await expect(page.getByText("Limitada · 1.19 ETH por unidade")).toBeVisible();
 });
 
 test("checkout recupera a conexão recusada e permite trocar a rede", async ({

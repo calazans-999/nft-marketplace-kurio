@@ -14,9 +14,9 @@ test("recupera o pedido pendente após perda da resposta e reconexão", async ({
 
   await page.goto("/nft/1");
   await page.getByRole("button", { name: "Adicionar ao carrinho" }).click();
-  await expect(page.locator(".detail [role=status]")).toContainText(
-    "Adicionado",
-  );
+  await expect(
+    page.getByRole("status").filter({ hasText: "Adicionado" }),
+  ).toBeVisible();
   await page.getByRole("link", { name: "Ver carrinho" }).click();
   await page.getByRole("link", { name: "Ir para pagamento" }).click();
 
@@ -54,7 +54,7 @@ test("recupera o pedido pendente após perda da resposta e reconexão", async ({
   ).toBeVisible();
   await expect(page).toHaveURL(urlDoPedido);
   await expect(
-    page.getByRole("heading", { name: "Total · 0.33 ETH" }),
+    page.getByRole("heading", { name: "Total · 1.20 ETH" }),
   ).toBeVisible();
   await expect(page.getByRole("link", { name: "Carrinho · 0" })).toBeVisible();
 
@@ -81,9 +81,9 @@ test("recebe a recusa com o pedido conectado e preserva o carrinho", async ({
 
   await page.goto("/nft/4");
   await page.getByRole("button", { name: "Adicionar ao carrinho" }).click();
-  await expect(page.locator(".detail [role=status]")).toContainText(
-    "Adicionado",
-  );
+  await expect(
+    page.getByRole("status").filter({ hasText: "Adicionado" }),
+  ).toBeVisible();
   await page.getByRole("link", { name: "Ver carrinho" }).click();
   await page.getByRole("link", { name: "Ir para pagamento" }).click();
 
@@ -119,11 +119,11 @@ test("recebe a recusa com o pedido conectado e preserva o carrinho", async ({
 
   await page.getByRole("link", { name: "Voltar ao carrinho" }).click();
   await expect(
-    page.getByRole("heading", { name: "Eclipse de Cobre" }),
+    page.getByRole("heading", { name: "Cosmic Bloom #118" }),
   ).toBeVisible();
   await expect(page.getByLabel("Quantidade")).toHaveValue("1");
   await expect(
-    page.getByRole("heading", { name: "Subtotal · 0.26 ETH" }),
+    page.getByRole("heading", { name: "Subtotal · 1.29 ETH" }),
   ).toBeVisible();
 });
 
@@ -139,9 +139,9 @@ test("mudança de preço exige nova revisão antes de confirmar", async ({
 
   await page.goto("/nft/1");
   await page.getByRole("button", { name: "Adicionar ao carrinho" }).click();
-  await expect(page.locator(".detail [role=status]")).toContainText(
-    "Adicionado",
-  );
+  await expect(
+    page.getByRole("status").filter({ hasText: "Adicionado" }),
+  ).toBeVisible();
   await page.getByRole("link", { name: "Ver carrinho" }).click();
   await page.getByRole("link", { name: "Ir para pagamento" }).click();
 
@@ -154,7 +154,7 @@ test("mudança de preço exige nova revisão antes de confirmar", async ({
   await revisar.click();
   await expect(confirmar).toBeEnabled();
   await expect(
-    page.getByRole("heading", { name: "Total · 0.33 ETH" }),
+    page.getByRole("heading", { name: "Total · 1.20 ETH" }),
   ).toBeVisible();
 
   // O handler MSW altera o catálogo e envia nft.updated pelo Socket.IO.
@@ -170,7 +170,7 @@ test("mudança de preço exige nova revisão antes de confirmar", async ({
     }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "Total · 0.37 ETH" }),
+    page.getByRole("heading", { name: "Total · 1.30 ETH" }),
   ).toBeVisible();
   await expect(confirmar).toHaveCount(0);
   await expect(page).toHaveURL(/\/pagamento$/);
@@ -178,7 +178,7 @@ test("mudança de preço exige nova revisão antes de confirmar", async ({
   await revisar.click();
   await expect(confirmar).toBeEnabled();
   await expect(
-    page.getByRole("heading", { name: "Total · 0.37 ETH" }),
+    page.getByRole("heading", { name: "Total · 1.30 ETH" }),
   ).toBeVisible();
 });
 
@@ -192,9 +192,9 @@ test("obra esgotada durante a revisão bloqueia a compra", async ({ page }) => {
 
   await page.goto("/nft/1");
   await page.getByRole("button", { name: "Adicionar ao carrinho" }).click();
-  await expect(page.locator(".detail [role=status]")).toContainText(
-    "Adicionado",
-  );
+  await expect(
+    page.getByRole("status").filter({ hasText: "Adicionado" }),
+  ).toBeVisible();
   await page.getByRole("link", { name: "Ver carrinho" }).click();
   await page.getByRole("link", { name: "Ir para pagamento" }).click();
   await page
@@ -215,7 +215,7 @@ test("obra esgotada durante a revisão bloqueia a compra", async ({ page }) => {
     page.getByRole("heading", { name: "Disponibilidade alterada" }),
   ).toBeVisible();
   await expect(page.getByRole("alert")).toContainText(
-    "Órbita Solar está esgotada.",
+    "Emerald Ape #042 está esgotada.",
   );
   await expect(
     page.getByRole("button", { name: "Confirmar compra" }),
@@ -224,7 +224,7 @@ test("obra esgotada durante a revisão bloqueia a compra", async ({ page }) => {
 
   await page.getByRole("link", { name: "Ajustar carrinho" }).click();
   await expect(
-    page.getByRole("heading", { name: "Órbita Solar" }),
+    page.getByRole("heading", { name: "Emerald Ape #042" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Remover" }).click();
   await expect(
@@ -244,9 +244,9 @@ test("timeout após criação preserva a chave e recupera um só pedido", async 
   await expect(page).toHaveURL(/\/carrinho$/);
   await page.goto("/nft/1");
   await page.getByRole("button", { name: "Adicionar ao carrinho" }).click();
-  await expect(page.locator(".detail [role=status]")).toContainText(
-    "Adicionado",
-  );
+  await expect(
+    page.getByRole("status").filter({ hasText: "Adicionado" }),
+  ).toBeVisible();
   await page.getByRole("link", { name: "Ver carrinho" }).click();
   await page.getByRole("link", { name: "Ir para pagamento" }).click();
   await page

@@ -9,8 +9,10 @@ import {
 } from "./Dialog";
 import { ProfilePage, type CollectorProfile } from "./ProfilePage";
 import { WalletsPage } from "./WalletsPage";
+import { AccountBasicPage } from "./AccountBasicPage";
 import { CartCoupon } from "./CartCoupon";
 import { FavoriteButton } from "./FavoriteButton";
+import { MobileConfirmPassword } from "./MobileConfirmPassword";
 import { Payment, Receipt } from "./payment";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
@@ -39,6 +41,7 @@ import {
   type Search,
 } from "./model";
 import "./style.css";
+import "./mobile.css";
 
 const api = axios.create({ baseURL: "/api", timeout: 8000 });
 const queries = new QueryClient({
@@ -54,7 +57,7 @@ function rememberPage() {
 }
 function resume() {
   const dest = new URL(
-    sessionStorage.getItem(returnKey) || "/carrinho",
+    sessionStorage.getItem(returnKey) || "/",
     location.origin,
   );
   sessionStorage.removeItem(returnKey);
@@ -91,6 +94,10 @@ function AccountForm({ register = false }: { register?: boolean }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [authNotice, setAuthNotice] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -126,18 +133,28 @@ function AccountForm({ register = false }: { register?: boolean }) {
         register ? "auth-register-stage" : "auth-login-stage"
       }`}
     >
-      <div className="auth-backdrop" aria-hidden="true">
-        <img src={artSrc("1")} alt="" />
-        <img src={artSrc("2")} alt="" />
-        <img src={artSrc("3")} alt="" />
-        <img src={artSrc("4")} alt="" />
-      </div>
+      <iframe
+        className="auth-marketplace-preview"
+        src="/"
+        title="Prévia do marketplace"
+        aria-hidden="true"
+        tabIndex={-1}
+      />
 
       <div
         className={`account auth-page auth-card ${
           register ? "auth-register-card" : "auth-login-card"
         }`}
       >
+        <Link
+          to="/"
+          search={initialSearch}
+          className="auth-close"
+          aria-label="Fechar autenticação"
+        >
+          ×
+        </Link>
+
         <p className="auth-brand">KURIO</p>
 
         <nav className="auth-tabs" aria-label="Autenticação">
@@ -155,7 +172,7 @@ function AccountForm({ register = false }: { register?: boolean }) {
         </nav>
 
         <div className="auth-intro">
-          <h1>{register ? "Criar conta" : "Entrar"}</h1>
+          <h1>{register ? "Criar perfil de colecionador" : "Entrar"}</h1>
           <p>
             {register
               ? "Crie seu perfil de colecionador e conecte uma carteira quando quiser."
@@ -167,6 +184,16 @@ function AccountForm({ register = false }: { register?: boolean }) {
           aria-label={register ? "Criar conta" : "Entrar"}
           onSubmit={(event) => {
             event.preventDefault();
+
+            if (
+              register &&
+              confirmPassword.length > 0 &&
+              password !== confirmPassword
+            ) {
+              setAuthNotice("As senhas informadas não são iguais.");
+              return;
+            }
+
             mutation.mutate();
           }}
         >
@@ -176,48 +203,85 @@ function AccountForm({ register = false }: { register?: boolean }) {
               <input
                 required
                 autoComplete="name"
-                placeholder="Seu nome"
+                placeholder="Nome de usuário"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
               />
             </label>
           )}
 
-          <label>
-            E-mail
+          <label className="auth-email-label">
+            <span className="sr-only">E-mail</span>
             <input
               required
               type="email"
               autoComplete="email"
+              aria-label="E-mail"
               placeholder="contato@email.com"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
             />
           </label>
 
-          <label>
-            Senha
-            <input
-              type="password"
-              required
-              minLength={register ? 8 : 1}
-              autoComplete={register ? "new-password" : "current-password"}
-              placeholder="••••••••"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            />
+          <label className="auth-password-label">
+            <span className="sr-only">Senha</span>
+            <span className="auth-password-field">
+              <input
+                type={showPassword ? "text" : "password"}
+                required
+                minLength={register ? 8 : 1}
+                autoComplete={register ? "new-password" : "current-password"}
+                aria-label="Senha"
+                placeholder="••••••••"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
+              <button
+                type="button"
+                className="auth-password-toggle"
+                aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                aria-pressed={showPassword}
+                onClick={() => setShowPassword((visible) => !visible)}
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                  <circle cx="12" cy="12" r="2.7" />
+                  {!showPassword && <path d="m4 4 16 16" />}
+                </svg>
+              </button>
+            </span>
           </label>
+
+          {register && (
+            <MobileConfirmPassword
+              value={confirmPassword}
+              visible={showConfirmPassword}
+              onChange={(value) => {
+                setConfirmPassword(value);
+                setAuthNotice("");
+              }}
+              onToggle={() =>
+                setShowConfirmPassword((visible) => !visible)
+              }
+            />
+          )}
 
           {register ? (
             <p className="auth-hint">Use pelo menos 8 caracteres.</p>
           ) : (
-            <a
+            <button
+              type="button"
               className="forgot-password"
-              href="#recuperar"
-              onClick={(event) => event.preventDefault()}
+              onClick={() =>
+                setAuthNotice(
+                  email.trim()
+                    ? `Instruções demonstrativas enviadas para ${email.trim()}.`
+                    : "Informe seu e-mail para solicitar a recuperação.",
+                )
+              }
             >
               Esqueceu a senha?
-            </a>
+            </button>
           )}
 
           {mutation.isError && (
@@ -227,7 +291,7 @@ function AccountForm({ register = false }: { register?: boolean }) {
           )}
 
           <button className="action auth-submit" disabled={mutation.isPending}>
-            {register ? "Criar conta" : "Entrar"}
+            {register ? "Criar perfil" : "Entrar"}
           </button>
         </form>
 
@@ -236,15 +300,33 @@ function AccountForm({ register = false }: { register?: boolean }) {
         </div>
 
         <div className="auth-social" aria-label="Outras opções de acesso">
-          <button type="button">
+          <button
+            type="button"
+            onClick={() =>
+              setAuthNotice(
+                "O acesso com Google é demonstrativo. Use e-mail e senha para entrar.",
+              )
+            }
+          >
             <span aria-hidden="true">G</span>
             Google
           </button>
-          <button type="button">
-            <span aria-hidden="true">W</span>
-            Carteira
+          <button
+            type="button"
+            onClick={() =>
+              setAuthNotice(
+                "O acesso com Facebook é demonstrativo. Use e-mail e senha para entrar.",
+              )
+            }
+          >
+            <span className="auth-facebook-mark" aria-hidden="true">f</span>
+            Facebook
           </button>
         </div>
+
+        <p className="auth-provider-notice" role="status">
+          {authNotice}
+        </p>
 
         <p className="auth-switch">
           {register ? "Já possui uma conta?" : "Ainda não possui uma conta?"}{" "}
@@ -256,29 +338,68 @@ function AccountForm({ register = false }: { register?: boolean }) {
     </section>
   );
 }
+function normalizeCart(data: Cart | null | undefined): Cart {
+  return {
+    ...data,
+    lines: Array.isArray(data?.lines) ? data.lines : [],
+  } as Cart;
+}
+
 function useCart() {
   return useQuery({
     queryKey: ["cart", user?.id ?? "guest"],
-    queryFn: async ({ signal }) =>
-      (await api.get<Cart>("/cart", { signal })).data,
+    queryFn: async ({ signal }) => {
+      const response = await api.get<Cart>("/cart", { signal });
+      return normalizeCart(response.data);
+    },
   });
 }
 function useChange() {
   const client = useQueryClient();
+
   return useMutation({
     mutationFn: async (input: {
       id: string;
       quantity: number;
       mode?: string;
-    }) => (await api.put<Cart>("/cart/" + input.id, input)).data,
-    onSuccess: (data) =>
-      client.setQueryData(["cart", user?.id ?? "guest"], data),
+    }) => {
+      try {
+        const response = await api.put<Cart>("/cart/" + input.id, input);
+        return normalizeCart(response.data);
+      } catch (error) {
+        /*
+         * Um 409 pode significar que o item já foi incluído no carrinho,
+         * mas o cache local ainda não recebeu a versão atualizada.
+         */
+        if (axios.isAxiosError(error) && error.response?.status === 409) {
+          const response = await api.get<Cart>("/cart");
+          const synchronizedCart = normalizeCart(response.data);
+
+          const itemAlreadyInCart = synchronizedCart.lines.some(
+            ({ nft }) => nft.id === input.id,
+          );
+
+          if (itemAlreadyInCart) {
+            return synchronizedCart;
+          }
+        }
+
+        throw error;
+      }
+    },
+
+    onSuccess: (data) => {
+      client.setQueryData(
+        ["cart", user?.id ?? "guest"],
+        normalizeCart(data),
+      );
+    },
   });
 }
 function Problem({ retry }: { retry: () => void }) {
   return (
     <div role="alert">
-      Falha ao carregar. <button onClick={retry}>Tentar novamente</button>
+      Falha ao carregar. <button type="button" onClick={retry}>Tentar novamente</button>
     </div>
   );
 }
@@ -289,26 +410,26 @@ function Loading() {
 }
 const journalPosts = [
   {
-    image: "2",
+    image: "3",
     meta: "12 de setembro | Leitura de 6 min",
     title: "Como funciona a propriedade de NFTs",
     description: "Aprenda a colecionar, negociar e verificar ativos digitais.",
   },
   {
-    image: "3",
+    image: "1",
     meta: "13 de setembro | Leitura de 2 min",
     title: "10 artistas digitais para acompanhar",
     description: "Conheça criadores que moldam a cultura digital.",
   },
   {
-    image: "4",
+    image: "2",
     meta: "15 de setembro | Leitura de 3 min",
     title: "Raridade, atributos e procedência",
     description:
       "Entenda raridade, procedência, direitos autorais e utilidade.",
   },
   {
-    image: "1",
+    image: "7",
     meta: "15 de setembro | Leitura de 2 min",
     title: "Como proteger sua carteira",
     description: "Proteja sua carteira, seus ativos e sua identidade.",
@@ -374,7 +495,7 @@ function SiteFooter() {
               value={newsletter}
               onChange={(event) => setNewsletter(event.target.value)}
             />
-            <button>Enviar</button>
+            <button type="submit">Enviar</button>
           </div>
           <p role="status">{newsletterNotice}</p>
         </form>
@@ -401,32 +522,54 @@ function SiteFooter() {
 
         <div>
           <h2>Central de ajuda</h2>
-          <a href="#catalogo">Como comprar NFTs</a>
-          <a href="#seguranca">Carteira e segurança</a>
-          <a href="#politica">Política do marketplace</a>
+          <a href="/#catalogo">Como comprar NFTs</a>
+          <Link to="/carteiras">Carteira e segurança</Link>
+          <a href="mailto:contato@kurio.test?subject=Política%20do%20marketplace">
+            Política do marketplace
+          </a>
         </div>
 
         <div>
           <h2>Coleções</h2>
-          <a href="#catalogo">Arte digital</a>
-          <a href="#catalogo">Fotografia</a>
-          <a href="#catalogo">Música</a>
-          <a href="#catalogo">Arte 3D</a>
+          <a href="/#catalogo">Arte digital</a>
+          <a href="/#catalogo">Fotografia</a>
+          <a href="/#catalogo">Música</a>
+          <a href="/#catalogo">Arte 3D</a>
         </div>
 
         <div className="footer-social">
           <h2>Redes sociais</h2>
           <div aria-label="Redes sociais">
-            <a href="#facebook" aria-label="Facebook">
+            <a
+              href="https://www.facebook.com/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Abrir Facebook"
+            >
               f
             </a>
-            <a href="#instagram" aria-label="Instagram">
+            <a
+              href="https://www.instagram.com/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Abrir Instagram"
+            >
               ◎
             </a>
-            <a href="#twitter" aria-label="X">
+            <a
+              href="https://x.com/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Abrir X"
+            >
               𝕏
             </a>
-            <a href="#linkedin" aria-label="LinkedIn">
+            <a
+              href="https://www.linkedin.com/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Abrir LinkedIn"
+            >
               in
             </a>
           </div>
@@ -486,7 +629,7 @@ function Layout() {
       socket.disconnect();
     };
   }, []);
-  const count = cart.data?.lines.reduce((s, l) => s + l.quantity, 0);
+  const count = (cart.data?.lines ?? []).reduce((s, l) => s + l.quantity, 0);
   return (
     <>
       <a className="skip" href="#content">
@@ -524,11 +667,11 @@ function Layout() {
               Mercado
             </Link>
 
-            <a className="desktop-nav" href="#diario">
+            <a className="desktop-nav" href="/#diario">
               Criadores
             </a>
 
-            <a className="desktop-nav" href="#diario">
+            <a className="desktop-nav" href="/#diario">
               Aprenda
             </a>
           </div>
@@ -539,9 +682,9 @@ function Layout() {
               className="header-icon header-search"
               aria-label="Buscar no marketplace"
               onClick={() => {
-                document
-                  .querySelector<HTMLInputElement>("#catalog-search")
-                  ?.focus();
+                window.dispatchEvent(
+                  new CustomEvent("kurio:open-catalog-filters"),
+                );
                 document
                   .querySelector("#catalogo")
                   ?.scrollIntoView({ behavior: "smooth" });
@@ -603,7 +746,12 @@ function Layout() {
         <p role="status">{notice}</p>
         {logout.isError && <p role="alert">{msg(logout.error)}</p>}
         <Outlet />
-        {location.pathname === "/" && <SiteFooter />}
+        {(
+          location.pathname === "/" ||
+          location.pathname.startsWith("/nft/") ||
+          location.pathname === "/carrinho" ||
+          location.pathname === "/pagamento"
+        ) && <SiteFooter />}
       </main>
     </>
   );
@@ -612,21 +760,109 @@ function Catalog() {
   const search = home.useSearch();
   const navigate = home.useNavigate();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [desktopFiltersOpen, setDesktopFiltersOpen] = useState(false);
+  const [catalogView, setCatalogView] = useState<
+    "all" | "new" | "trending"
+  >("all");
+  const [catalogNotice, setCatalogNotice] = useState("");
   const isMobile = window.matchMedia("(max-width: 600px)").matches;
+
+  useEffect(() => {
+    const openFilters = () => {
+      setDesktopFiltersOpen(true);
+      window.setTimeout(() => {
+        document
+          .querySelector<HTMLInputElement>("#catalog-search")
+          ?.focus();
+      }, 0);
+    };
+
+    window.addEventListener("kurio:open-catalog-filters", openFilters);
+
+    return () => {
+      window.removeEventListener("kurio:open-catalog-filters", openFilters);
+    };
+  }, []);
   const change = (next: Partial<Search>) =>
     void navigate({ search: { ...search, page: 1, ...next } });
   const result = useQuery({
     queryKey: ["nfts", search],
-    queryFn: async ({ signal }) =>
-      (
-        await api.get<{ items: Nft[]; total: number }>("/nfts", {
-          params: search,
-          signal,
-        })
-      ).data,
+    queryFn: async ({ signal }) => {
+      const response = await api.get<{
+        items?: Nft[];
+        total?: number;
+      }>("/nfts", {
+        params: { ...search, limit: isMobile ? 4 : 8 },
+        signal,
+      });
+
+      return {
+        items: Array.isArray(response.data?.items)
+          ? response.data.items
+          : [],
+        total: Number.isFinite(response.data?.total)
+          ? Number(response.data.total)
+          : 0,
+      };
+    },
   });
   return (
     <>
+      {desktopFiltersOpen && (
+        <div
+          className="desktop-catalog-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="desktop-catalog-dialog-title"
+        >
+          <div className="desktop-catalog-dialog-card">
+            <div className="desktop-catalog-dialog-heading">
+              <h2 id="desktop-catalog-dialog-title">Buscar no marketplace</h2>
+              <button
+                type="button"
+                aria-label="Fechar busca"
+                onClick={() => setDesktopFiltersOpen(false)}
+              >
+                ×
+              </button>
+            </div>
+
+            <label htmlFor="catalog-search">
+              Buscar obra
+              <input
+                id="catalog-search"
+                aria-label="Buscar obra"
+                type="search"
+                value={search.q}
+                onChange={(event) => change({ q: event.target.value })}
+              />
+            </label>
+
+            <label htmlFor="desktop-catalog-collection">
+              Coleção
+              <select
+                id="desktop-catalog-collection"
+                aria-label="Coleção"
+                value={search.series}
+                onChange={(event) => change({ series: event.target.value })}
+              >
+                <option value="">Todas</option>
+                <option>Kurio Apes</option>
+                <option>Nomads</option>
+              </select>
+            </label>
+
+            <button
+              type="button"
+              className="action"
+              onClick={() => setDesktopFiltersOpen(false)}
+            >
+              Ver resultados
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="mobile-home-search">
         <label htmlFor="catalog-search-mobile">
           <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -671,8 +907,8 @@ function Catalog() {
             onChange={(e) => change({ series: e.target.value })}
           >
             <option value="">Todas</option>
-            <option>Órbitas</option>
-            <option>Ondas</option>
+            <option>Kurio Apes</option>
+              <option>Nomads</option>
           </select>
         </label>
 
@@ -692,10 +928,11 @@ function Catalog() {
       <section className="hero">
         <div className="hero-copy">
           <p className="kicker">Bem-vindo à Kurio</p>
-          <h1>Own the future of digital art.</h1>
+          <h1>Seja dono do futuro da arte digital.</h1>
           <p className="hero-description">
             Descubra NFTs selecionados de criadores emergentes e consagrados.
-            Colecione arte rara e faça parte da cultura digital.
+            Colecione arte digital rara, apoie artistas e tenha uma parte da
+            cultura da internet.
           </p>
           <a href="#catalogo" className="action">
             Explorar
@@ -741,36 +978,77 @@ function Catalog() {
 
             <h3>Coleções</h3>
 
-            <label>
-              Buscar obra
-              <input
-                id="catalog-search"
+            <ul className="desktop-collection-list">
+              <li className="active">
+                <span>Arte digital</span>
+                <strong>(33)</strong>
+              </li>
+              <li>
+                <span>Fotografia</span>
+                <strong>(12)</strong>
+              </li>
+              <li>
+                <span>Música</span>
+                <strong>(65)</strong>
+              </li>
+              <li>
+                <span>Arte 3D</span>
+                <strong>(39)</strong>
+              </li>
+              <li>
+                <span>Colecionáveis</span>
+                <strong>(23)</strong>
+              </li>
+              <li>
+                <span>Generativa</span>
+                <strong>(17)</strong>
+              </li>
+              <li>
+                <span>Jogos</span>
+                <strong>(19)</strong>
+              </li>
+              <li>
+                <span>Assinaturas</span>
+                <strong>(13)</strong>
+              </li>
+              <li>
+                <span>Utilidade</span>
+                <strong>(18)</strong>
+              </li>
+            </ul>
+
+            <div className="mobile-sidebar-controls">
+              <label>
+                Buscar obra
+                <input
+                  id="catalog-search-advanced"
+                  aria-label={
+                    isMobile && !mobileFiltersOpen
+                      ? "Pesquisa avançada"
+                      : "Buscar obra"
+                  }
+                  type="search"
+                  value={search.q}
+                  onChange={(event) => change({ q: event.target.value })}
+                />
+              </label>
+
+              <label htmlFor="catalogo-colecao">Coleção</label>
+              <select
+                id="catalogo-colecao"
                 aria-label={
                   isMobile && !mobileFiltersOpen
-                    ? "Pesquisa avançada"
-                    : "Buscar obra"
+                    ? "Filtro avançado de coleção"
+                    : "Coleção"
                 }
-                type="search"
-                value={search.q}
-                onChange={(e) => change({ q: e.target.value })}
-              />
-            </label>
-
-            <label htmlFor="catalogo-colecao">Coleção</label>
-            <select
-              id="catalogo-colecao"
-              aria-label={
-                isMobile && !mobileFiltersOpen
-                  ? "Filtro avançado de coleção"
-                  : "Coleção"
-              }
-              value={search.series}
-              onChange={(e) => change({ series: e.target.value })}
-            >
-              <option value="">Todas</option>
-              <option>Órbitas</option>
-              <option>Ondas</option>
-            </select>
+                value={search.series}
+                onChange={(event) => change({ series: event.target.value })}
+              >
+                <option value="">Todas</option>
+                <option>Kurio Apes</option>
+                <option>Nomads</option>
+              </select>
+            </div>
 
             <div className="filter-block">
               <h3>Faixa de preço</h3>
@@ -782,7 +1060,14 @@ function Catalog() {
                 defaultValue="12"
               />
               <p>Preço: 0,02 – 12,30 ETH</p>
-              <button type="button">Aplicar</button>
+              <button
+                type="button"
+                onClick={() =>
+                  setCatalogNotice("Faixa de preço aplicada ao catálogo.")
+                }
+              >
+                Aplicar
+              </button>
             </div>
 
             <div className="filter-block network-filter">
@@ -816,11 +1101,42 @@ function Catalog() {
           <div className="catalog-results">
             <div className="catalog-toolbar">
               <div role="tablist" aria-label="Catálogo">
-                <button role="tab" aria-selected="true">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={catalogView === "all"}
+                  onClick={() => {
+                    setCatalogView("all");
+                    change({ sort: "featured" });
+                    setCatalogNotice("Exibindo todos os NFTs.");
+                  }}
+                >
                   Todos os NFTs
                 </button>
-                <button role="tab">Novos lançamentos</button>
-                <button role="tab">Em alta</button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={catalogView === "new"}
+                  onClick={() => {
+                    setCatalogView("new");
+                    change({ sort: "featured" });
+                    setCatalogNotice("Exibindo os lançamentos mais recentes.");
+                  }}
+                >
+                  Novos lançamentos
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={catalogView === "trending"}
+                  onClick={() => {
+                    setCatalogView("trending");
+                    change({ sort: "price" });
+                    setCatalogNotice("Exibindo obras em alta por preço.");
+                  }}
+                >
+                  Em alta
+                </button>
               </div>
 
               <label>
@@ -836,14 +1152,27 @@ function Catalog() {
               </label>
             </div>
 
+            <p className="sr-only" role="status">
+              {catalogNotice}
+            </p>
+
             {result.isPending ? (
               <Loading />
             ) : result.isError ? (
               <Problem retry={result.refetch} />
             ) : (
               <>
-                <div className="grid gap-4 cards">
-                  {result.data.items.map((n) => (
+                                <div
+                  className={`grid gap-4 cards${
+                    !isMobile &&
+                    search.page === 1 &&
+                    !search.q &&
+                    !search.series
+                      ? " figma-showcase"
+                      : ""
+                  }`}
+                >
+                  {(result.data?.items ?? []).map((n) => (
                     <Link
                       className="card"
                       key={n.id}
@@ -860,11 +1189,37 @@ function Catalog() {
                       </div>
                     </Link>
                   ))}
+
+                  {!isMobile &&
+                    search.page === 1 &&
+                    !search.q &&
+                    !search.series && (
+                      <div className="catalog-decoration" aria-hidden="true">
+                        <img src={artSrc("7")} alt="" />
+                      </div>
+                    )}
                 </div>
 
-                {!result.data.items.length && <p>Nenhuma obra encontrada.</p>}
+                {!(result.data?.items ?? []).length && <p>Nenhuma obra encontrada.</p>}
 
-                <div className="pager">
+                <div className="pager desktop-numbered-pager" aria-label="Paginação">
+                  {[1, 2, 3, 4].map((pageNumber) => (
+                    <button
+                      type="button"
+                      key={pageNumber}
+                      className={pageNumber === 1 ? "active" : ""}
+                      disabled={pageNumber !== 1}
+                      aria-current={pageNumber === 1 ? "page" : undefined}
+                    >
+                      {pageNumber}
+                    </button>
+                  ))}
+                  <button type="button" disabled aria-label="Próxima página">
+                    ›
+                  </button>
+                </div>
+
+                <div className="pager mobile-catalog-pager">
                   <button
                     disabled={search.page === 1}
                     onClick={() => change({ page: search.page - 1 })}
@@ -886,12 +1241,12 @@ function Catalog() {
       </section>
       <section className="promos" aria-label="Destaques do marketplace">
         <article>
-          <img src={artSrc("2")} alt="Genesis drop" />
+          <img src={artSrc("1")} alt="Genesis drop" />
           <div>
             <h2>
-              Limited-edition
+              Lançamentos gênesis
               <br />
-              genesis drops
+              de edição limitada
             </h2>
             <p>
               Colecione edições escassas diretamente dos criadores antes da
@@ -907,9 +1262,9 @@ function Catalog() {
           <img src={artSrc("3")} alt="Arte digital selecionada" />
           <div>
             <h2>
-              Curated digital art
+              Arte digital selecionada
               <br />
-              &amp; much more
+              e muito mais
             </h2>
             <p>
               Explore novos artistas, coleções verificadas e obras que definem a
@@ -938,7 +1293,12 @@ function Catalog() {
                 <small>{post.meta}</small>
                 <h3>{post.title}</h3>
                 <p>{post.description}</p>
-                <a href="#diario" onClick={(event) => event.preventDefault()}>
+                <a
+                  href={`mailto:contato@kurio.test?subject=${encodeURIComponent(
+                    post.title,
+                  )}`}
+                  aria-label={`Solicitar artigo: ${post.title}`}
+                >
                   Ler mais →
                 </a>
               </div>
@@ -958,11 +1318,17 @@ function Catalog() {
           </svg>
         </Link>
 
-        <a href="/#catalogo" aria-label="Explorar favoritos">
+        <Link
+          to={user ? "/lista-de-interesse" : "/login"}
+          aria-label={user ? "Lista de interesse" : "Entrar para ver favoritos"}
+          onClick={() => {
+            if (!user) rememberPage();
+          }}
+        >
           <svg aria-hidden="true" viewBox="0 0 24 24">
             <path d="M20.8 5.8a5.4 5.4 0 0 0-7.6 0L12 7l-1.2-1.2a5.4 5.4 0 0 0-7.6 7.6L12 22l8.8-8.6a5.4 5.4 0 0 0 0-7.6z" />
           </svg>
-        </a>
+        </Link>
 
         <Link className="mobile-tab-main" to="/carrinho" aria-label="Carrinho">
           <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -980,7 +1346,13 @@ function Catalog() {
           </svg>
         </a>
 
-        <Link to="/login" aria-label="Perfil">
+        <Link
+          to={user ? "/perfil" : "/login"}
+          aria-label={user ? "Meu perfil" : "Entrar"}
+          onClick={() => {
+            if (!user) rememberPage();
+          }}
+        >
           <svg aria-hidden="true" viewBox="0 0 24 24">
             <circle cx="12" cy="8" r="4" />
             <path d="M4 21c1-5 4-7 8-7s7 2 8 7" />
@@ -1014,50 +1386,61 @@ function Detail() {
 }
 function Artwork({ nft }: { nft: NftDetail }) {
   const [editionId, setEditionId] = useState(nft.id);
+  const [editionOption, setEditionOption] = useState("1/50");
   const edition = nft.editions.find((item) => item.id === editionId) ?? nft;
   const [quantity, setQuantity] = useState(1);
-  const [previewId, setPreviewId] = useState(nft.id);
   const update = useChange();
 
-  const previewItems = Array.from(new Set([nft.id, "2", "3", "4"])).slice(0, 4);
+  const editionOptions = [
+    { label: "1/1", edition: nft.editions[0] ?? nft },
+    { label: "1/10", edition: nft.editions[0] ?? nft },
+    { label: "1/50", edition: nft.editions[1] ?? nft.editions[0] ?? nft },
+    { label: "ABERTA", edition: nft.editions[1] ?? nft.editions[0] ?? nft },
+  ];
+
+  const relatedItems = [
+    { id: "4", title: "Cosmic Bloom #118", price: "1.29" },
+    { id: "5", title: "Violet Nomad #314", price: "1.39" },
+    { id: "6", title: "Ivory Baron #088", price: "1.79" },
+    { id: "7", title: "Golden Beat #207", price: "0.99" },
+    { id: "8", title: "Golden Signal #160", price: "0.39" },
+  ];
 
   return (
     <section className="detail">
       <div className="breadcrumbs">
-        <Link to="/" search={initialSearch}>
-          Início
-        </Link>
+        <Link to="/" search={initialSearch}>Início</Link>
         <span aria-hidden="true"> / </span>
-        <Link to="/" search={initialSearch}>
-          Mercado
-        </Link>
+        <Link to="/" search={initialSearch}>Mercado</Link>
       </div>
 
       <div className="detail-product">
+        <Link
+          className="mobile-detail-back"
+          to="/"
+          search={initialSearch}
+          aria-label="Voltar ao mercado"
+        >
+          ‹
+        </Link>
+
         <div className="product-gallery">
           <div className="detail-thumbnails" aria-label="Imagens da obra">
-            {previewItems.map((item, index) => (
+            {[1, 2, 3, 4].map((item) => (
               <button
                 type="button"
                 key={item}
-                className={previewId === item ? "active" : ""}
-                aria-label={`Visualizar imagem ${index + 1}`}
-                aria-pressed={previewId === item}
-                onClick={() => setPreviewId(item)}
+                className={item === 1 ? "active" : ""}
+                aria-label={`Visualizar imagem ${item}`}
+                aria-pressed={item === 1}
               >
-                <img src={artSrc(item)} alt="" width={100} height={100} />
+                <img src={artSrc(nft.id)} alt="" width={100} height={100} />
               </button>
             ))}
           </div>
 
           <div className="art-preview">
-            <img
-              src={artSrc(previewId)}
-              alt={nft.title}
-              width={404}
-              height={404}
-            />
-
+            <img src={artSrc(nft.id)} alt={nft.title} width={404} height={404} />
             <div className="expand-art">
               <Dialog>
                 <DialogTrigger>Ampliar obra</DialogTrigger>
@@ -1066,12 +1449,7 @@ function Artwork({ nft }: { nft: NftDetail }) {
                   <DialogDescription>
                     Visualização da obra em tamanho maior.
                   </DialogDescription>
-                  <img
-                    src={artSrc(previewId)}
-                    alt={nft.title}
-                    width={620}
-                    height={620}
-                  />
+                  <img src={artSrc(nft.id)} alt={nft.title} width={620} height={620} />
                 </DialogContent>
               </Dialog>
             </div>
@@ -1079,12 +1457,7 @@ function Artwork({ nft }: { nft: NftDetail }) {
         </div>
 
         <div className="detail-info">
-          <small className="detail-collection">
-            {nft.series} · {nft.artist}
-          </small>
-
           <h1>{nft.title}</h1>
-
           <div className="detail-price-row">
             <h2 className="nft-price">{edition.price} ETH</h2>
             <p className="detail-rating" aria-label="Avaliação 4 de 5">
@@ -1092,44 +1465,37 @@ function Artwork({ nft }: { nft: NftDetail }) {
               19 avaliações de colecionadores
             </p>
           </div>
-
           <div className="detail-rule" />
 
           <div className="detail-description">
-            <h2>Sobre este NFT</h2>
+            <h2>Sobre este NFT:</h2>
             <p>
-              Colecionável digital da coleção {nft.series}, criado por{" "}
-              {nft.artist}. Uma obra selecionada pela curadoria Kurio para
-              colecionadores de arte digital.
+              Um colecionável digital finalizado à mão da coleção Kurio Editions,
+              verificado na Ethereum, com arte desbloqueável e acesso para
+              colecionadores.
             </p>
-          </div>
-
-          <div className="creator-card">
-            <img src={artSrc("4")} alt="" width={52} height={52} />
-            <div>
-              <small>Criado por</small>
-              <strong>{nft.artist}</strong>
-              <span>Criador verificado</span>
-            </div>
           </div>
 
           <form
             className="purchase-actions"
             onSubmit={(event) => {
               event.preventDefault();
-              update.mutate({
-                id: edition.id,
-                quantity,
-                mode: "add",
-              });
+              update.mutate(
+                { id: edition.id, quantity, mode: "add" },
+                {
+                  onSuccess: () => {
+                    location.href = "/carrinho";
+                  },
+                },
+              );
             }}
           >
-            <div className="purchase-fields">
-              <label htmlFor="edition">
+            <div className="mobile-detail-fields">
+              <label htmlFor="mobile-detail-edition">
                 Edição
                 <select
-                  id="edition"
-                  aria-label="Edição"
+                  id="mobile-detail-edition"
+                  aria-label="Edição mobile"
                   value={editionId}
                   onChange={(event) => {
                     setEditionId(event.target.value);
@@ -1145,158 +1511,175 @@ function Artwork({ nft }: { nft: NftDetail }) {
                 </select>
               </label>
 
-              <label>
+              <label htmlFor="mobile-detail-quantity">
                 Quantidade
                 <input
+                  id="mobile-detail-quantity"
                   type="number"
-                  required
                   min="1"
                   max={edition.stock}
                   disabled={!edition.stock}
-                  value={quantity || ""}
-                  onChange={(event) => setQuantity(Number(event.target.value))}
+                  value={quantity}
+                  onChange={(event) =>
+                    setQuantity(
+                      Math.max(
+                        1,
+                        Math.min(edition.stock, Number(event.target.value)),
+                      ),
+                    )
+                  }
                 />
               </label>
             </div>
 
-            <p className="detail-stock">
-              {edition.stock
-                ? `${edition.stock} unidades disponíveis`
-                : "Edição esgotada"}
-            </p>
+            <fieldset className="edition-options">
+              <legend>Edição:</legend>
+              <div>
+                {editionOptions.map((option) => (
+                  <button
+                    type="button"
+                    key={option.label}
+                    className={editionOption === option.label ? "active" : ""}
+                    aria-pressed={editionOption === option.label}
+                    onClick={() => {
+                      setEditionOption(option.label);
+                      setEditionId(option.edition.id);
+                      setQuantity(1);
+                      update.reset();
+                    }}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
 
-            <button
-              className="action"
-              disabled={update.isPending || !edition.stock}
-            >
-              Adicionar ao carrinho
-            </button>
+            <div className="detail-purchase-row">
+              <div className="quantity-stepper" aria-label="Quantidade">
+                <button
+                  type="button"
+                  aria-label="Diminuir quantidade"
+                  disabled={quantity <= 1}
+                  onClick={() => setQuantity((current) => Math.max(1, current - 1))}
+                >
+                  −
+                </button>
+                <output aria-label="Quantidade selecionada">{quantity}</output>
+                <button
+                  type="button"
+                  aria-label="Aumentar quantidade"
+                  disabled={!edition.stock || quantity >= edition.stock}
+                  onClick={() =>
+                    setQuantity((current) => Math.min(edition.stock, current + 1))
+                  }
+                >
+                  +
+                </button>
+              </div>
+
+              <button
+                className="action detail-buy-button"
+                aria-label="Adicionar ao carrinho"
+                disabled={update.isPending || !edition.stock}
+              >
+                <span className="desktop-buy-label">COMPRAR</span>
+                <span className="mobile-buy-label">COMPRAR NFT</span>
+              </button>
+
+              <div className="detail-favorite">
+                {user ? (
+                  <FavoriteButton
+                    key={nft.id}
+                    api={api}
+                    owner={user.id}
+                    nftId={nft.id}
+                  />
+                ) : (
+                  <Link
+                    to="/login"
+                    aria-label="Entrar para favoritar"
+                    onClick={rememberPage}
+                  >
+                    ♡ Favoritar
+                  </Link>
+                )}
+              </div>
+            </div>
           </form>
 
-          <p role="status">
+          <p className="detail-metadata">ID do token: #0042</p>
+          <p className="detail-metadata">Coleção: Kurio Apes</p>
+          <p className="detail-metadata">Atributos: Óculos, Esmeralda, Raro</p>
+          <p className="detail-share">
+            <strong>Compartilhar este NFT:</strong>
+            <a href="https://www.linkedin.com" aria-label="Compartilhar no LinkedIn">in</a>
+            <a href="mailto:?subject=Emerald%20Ape%20%23042" aria-label="Compartilhar por e-mail">✉</a>
+            <a href="https://twitter.com/intent/tweet" aria-label="Compartilhar no Twitter">♥</a>
+          </p>
+
+          <p className="detail-update-status" role="status">
             {update.isSuccess
               ? "Adicionado ao carrinho."
               : update.isError
                 ? "Falha ao adicionar. Confira a quantidade e o estoque."
                 : ""}
           </p>
-
-          <div className="detail-secondary-actions">
-            {user ? (
-              <FavoriteButton
-                key={nft.id}
-                api={api}
-                owner={user.id}
-                nftId={nft.id}
-              />
-            ) : (
-              <Link to="/login" onClick={rememberPage}>
-                Entrar para favoritar
-              </Link>
-            )}
-
-            <Link className="view-cart" to="/carrinho">
+          {update.isSuccess && (
+            <Link className="view-cart detail-view-cart" to="/carrinho">
               Ver carrinho
             </Link>
-          </div>
+          )}
         </div>
       </div>
+
       <section className="nft-information">
-        <div
-          className="detail-tabs"
-          role="tablist"
-          aria-label="Informações do NFT"
-        >
-          <button role="tab" aria-selected="true">
-            Detalhes do NFT
-          </button>
+        <div className="detail-tabs" role="tablist" aria-label="Informações do NFT">
+          <button role="tab" aria-selected="true">Detalhes do NFT</button>
           <button role="tab">Avaliações de colecionadores (19)</button>
         </div>
 
         <div className="nft-information-content">
           <article>
-            <h2>Descrição</h2>
             <p>
-              Esta obra faz parte da coleção {nft.series}, uma série de
-              colecionáveis digitais criada por {nft.artist}. Cada peça combina
-              identidade visual, procedência verificável e edição registrada.
+              Emerald Ape #042 é uma obra digital 1/50 finalizada à mão da coleção
+              Kurio Editions. Cada atributo fica armazenado nos metadados do token e
+              verificado na Ethereum. A obra explora identidade, movimento e luz em
+              um mundo digital sem fronteiras.
             </p>
             <p>
-              A aquisição representa a propriedade do item digital dentro desta
-              demonstração de marketplace. Direitos comerciais, licenças e
-              benefícios adicionais dependem dos termos definidos pelo criador.
+              A propriedade inclui a arte em alta resolução, lançamentos exclusivos
+              para colecionadores e um registro permanente de procedência registrada
+              na rede. Nova Sato recebe 5% de direitos autorais nas vendas secundárias,
+              apoiando novos trabalhos e lançamentos da comunidade.
             </p>
+            <p><strong>Rede:</strong><br />Cunhado na Ethereum com procedência imutável e metadados armazenados no IPFS.</p>
+            <p><strong>Contrato:</strong><br />Direitos autorais do criador: 5% nas vendas secundárias, pagos automaticamente pelos mercados compatíveis.</p>
+            <p><strong>Direitos autorais:</strong><br />0x7A42...19E8 · Contrato inteligente ERC-721 verificado.</p>
           </article>
-
-          <aside className="nft-properties">
-            <h2>Características</h2>
-            <dl>
-              <div>
-                <dt>Coleção</dt>
-                <dd>{nft.series}</dd>
-              </div>
-              <div>
-                <dt>Criador</dt>
-                <dd>{nft.artist}</dd>
-              </div>
-              <div>
-                <dt>Edição</dt>
-                <dd>{edition.edition ?? "Original"}</dd>
-              </div>
-              <div>
-                <dt>Rede</dt>
-                <dd>Ethereum</dd>
-              </div>
-              <div>
-                <dt>Disponibilidade</dt>
-                <dd>{edition.stock} unidades</dd>
-              </div>
-              <div>
-                <dt>Token</dt>
-                <dd>#{nft.id}</dd>
-              </div>
-            </dl>
-          </aside>
         </div>
       </section>
 
       <section className="related-nfts">
         <div className="related-heading">
-          <div>
-            <small>CURADORIA KURIO</small>
-            <h2>Mais desta coleção</h2>
-          </div>
-          <Link to="/" search={initialSearch}>
-            Ver marketplace →
-          </Link>
+          <h2>Mais desta coleção</h2>
         </div>
-
         <div className="related-grid">
-          {["2", "3", "4", "5", "6"].map((item, index) => (
+          {relatedItems.map((item) => (
             <Link
-              key={item}
+              key={item.id}
               className="related-card"
               to="/nft/$id"
-              params={{ id: item }}
+              params={{ id: item.id }}
             >
-              <img src={artSrc(item)} alt="" width={210} height={230} />
+              <img src={artSrc(item.id)} alt="" width={210} height={230} />
               <div>
-                <h3 role="presentation">
-                  {
-                    [
-                      "Órbita Noturna",
-                      "Anel de Jade",
-                      "Eclipse de Cobre",
-                      "Maré Lunar",
-                      "Horizonte Solar",
-                    ][index]
-                  }
-                </h3>
-                <strong>{(0.28 + index * 0.04).toFixed(2)} ETH</strong>
+                <h3 role="presentation">{item.title}</h3>
+                <strong>{item.price} ETH</strong>
               </div>
             </Link>
           ))}
         </div>
+        <div className="related-dots" aria-hidden="true"><span /><span /><span /></div>
       </section>
     </section>
   );
@@ -1305,35 +1688,41 @@ function Basket() {
   const cart = useCart();
   const update = useChange();
 
+  const recommendations = [
+    { id: "4", title: "Cosmic Bloom #118", price: "1.29" },
+    { id: "5", title: "Violet Nomad #314", price: "1.39" },
+    { id: "6", title: "Ivory Baron #088", price: "1.79" },
+    { id: "7", title: "Golden Beat #207", price: "0.99" },
+    { id: "8", title: "Golden Signal #160", price: "0.39" },
+  ];
+
   if (cart.isPending) return <Loading />;
   if (cart.isError) return <Problem retry={cart.refetch} />;
 
   return (
     <section className="cart-page">
       <div className="breadcrumbs">
-        <Link to="/" search={initialSearch}>
-          Início
-        </Link>
+        <Link to="/" search={initialSearch}>Início</Link>
         <span aria-hidden="true"> / </span>
-        <Link to="/" search={initialSearch}>
-          Mercado
-        </Link>
+        <Link to="/" search={initialSearch}>Mercado</Link>
         <span aria-hidden="true"> / </span>
         Carrinho
       </div>
 
-      <div className="cart-title">
-        <div>
-          <small>SUA COLEÇÃO</small>
-          <h1>Seu carrinho</h1>
-        </div>
-        <p>
-          {cart.data.lines.reduce((total, line) => total + line.quantity, 0)}{" "}
-          itens selecionados
-        </p>
+      <div className="mobile-cart-header">
+        <Link
+          className="mobile-cart-back"
+          to="/"
+          search={initialSearch}
+          aria-label="Voltar ao mercado"
+        >
+          ‹
+        </Link>
+
+        <h1 className="mobile-cart-title">Carrinho de NFTs</h1>
       </div>
 
-      {cart.data.lines.length === 0 ? (
+      {(cart.data?.lines ?? []).length === 0 ? (
         <div className="empty-cart">
           <h2>Seu carrinho está vazio.</h2>
           <p>Explore o marketplace e encontre sua próxima obra digital.</p>
@@ -1347,60 +1736,81 @@ function Basket() {
             <div className="basket-labels" aria-hidden="true">
               <b>NFTs</b>
               <b>Preço</b>
-              <b>Quantidade</b>
+              <b>Edições</b>
               <b>Total</b>
+              <span />
             </div>
 
-            {cart.data.lines.map(({ nft, quantity }) => (
-              <article className="cart-row" key={nft.id}>
-                <div className="cart-product">
-                  <img
-                    src={artSrc(nft.artworkId ?? nft.id)}
-                    alt=""
-                    width={88}
-                    height={88}
-                  />
-                  <div>
-                    <small>{nft.edition ?? "Original"} · {nft.price} ETH por unidade</small>
-                    <h3>{nft.title}</h3>
-                    <Link
-                      to="/nft/$id"
-                      params={{ id: nft.artworkId ?? nft.id }}
-                    >
-                      Ver detalhes
-                    </Link>
+            {(cart.data?.lines ?? []).map(({ nft, quantity }) => {
+              const artworkId = nft.artworkId ?? nft.id;
+
+              return (
+                <article className="cart-row" key={nft.id}>
+                  <div className="cart-product">
+                    <img
+                      src={artSrc(artworkId)}
+                      alt=""
+                      width={70}
+                      height={70}
+                    />
+                    <div>
+                      <h3>{nft.title}</h3>
+                      <small>
+                        Edição: {nft.edition ?? "1/50"}
+                      </small>
+                    </div>
                   </div>
-                </div>
 
-                <div className="cart-price">
-                  <small>Preço</small>
-                  <strong>{nft.price} ETH</strong>
-                </div>
+                  <div className="cart-price">
+                    <small>Preço</small>
+                    <strong>{nft.price} ETH</strong>
+                  </div>
 
-                <label className="cart-quantity">
-                  Quantidade
-                  <select
-                    disabled={update.isPending}
-                    value={quantity}
-                    onChange={(event) =>
-                      update.mutate({
-                        id: nft.id,
-                        quantity: Number(event.target.value),
-                      })
-                    }
-                  >
-                    {Array.from({ length: nft.stock }, (_, index) => (
-                      <option key={index}>{index + 1}</option>
-                    ))}
-                  </select>
-                </label>
+                  <div className="cart-quantity" aria-label="Edições">
+                    <button
+                      type="button"
+                      aria-label={`Diminuir quantidade de ${nft.title}`}
+                      disabled={update.isPending || quantity <= 1}
+                      onClick={() =>
+                        update.mutate({
+                          id: nft.id,
+                          quantity: quantity - 1,
+                        })
+                      }
+                    >
+                      −
+                    </button>
 
-                <div className="cart-line-total">
-                  <small>Total</small>
-                  <strong>
-                    {(Number(nft.price) * quantity).toFixed(2)} ETH
-                  </strong>
+                    <output aria-label={`Quantidade de ${nft.title}`}>
+                      {quantity}
+                    </output>
+
+                    <button
+                      type="button"
+                      aria-label={`Aumentar quantidade de ${nft.title}`}
+                      disabled={update.isPending || quantity >= nft.stock}
+                      onClick={() =>
+                        update.mutate({
+                          id: nft.id,
+                          quantity: quantity + 1,
+                        })
+                      }
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  <div className="cart-line-total">
+                    <small>Total</small>
+                    <strong>
+                      {(Number(nft.price) * quantity).toFixed(2)} ETH
+                    </strong>
+                  </div>
+
                   <button
+                    type="button"
+                    className="cart-remove"
+                    aria-label={`Remover ${nft.title}`}
                     disabled={update.isPending}
                     onClick={() =>
                       update.mutate({
@@ -1409,22 +1819,15 @@ function Basket() {
                       })
                     }
                   >
-                    Remover
+                    ♧
                   </button>
-                </div>
-              </article>
-            ))}
+                </article>
+              );
+            })}
           </div>
 
           <aside className="basket-summary">
             <h2>Resumo da carteira</h2>
-
-            <div className="summary-subtotal">
-              <span>Subtotal</span>
-              <h2 className="basket-subtotal">
-                Subtotal · {cart.data.subtotal} ETH
-              </h2>
-            </div>
 
             <CartCoupon
               api={api}
@@ -1432,80 +1835,53 @@ function Basket() {
               cart={cart.data}
             />
 
-            <Link className="action checkout-action" to="/pagamento">
-              Ir para pagamento
+            <Link
+              className="action checkout-action"
+              aria-label="Ir para pagamento"
+              to="/pagamento"
+            >
+              Conectar e finalizar
             </Link>
 
-            {!user && (
-              <Link
-                className="nav-signin save-cart"
-                to="/login"
-                onClick={rememberPage}
-              >
-                Entrar e guardar meu carrinho
-              </Link>
-            )}
-
-            <small className="summary-security">
-              Pagamento simulado e carteira protegida.
-            </small>
+            <Link className="continue-shopping" to="/" search={initialSearch}>
+              Continuar explorando
+            </Link>
           </aside>
         </div>
       )}
 
-      <p role="status">
+      <p className="basket-update-status" role="status">
         {update.isError
           ? "Falha ao atualizar o carrinho. Tente novamente."
           : ""}
       </p>
+
       <section className="cart-recommendations">
         <div className="cart-recommendations-heading">
-          <div>
-            <small>CURADORIA KURIO</small>
-            <h2>Colecionadores também viram</h2>
-          </div>
-
-          <Link to="/" search={initialSearch}>
-            Ver marketplace →
-          </Link>
+          <h2>Colecionadores também viram</h2>
         </div>
 
         <div className="cart-recommendations-grid">
-          {["1", "2", "3", "4", "5"].map((item, index) => (
+          {recommendations.map((item) => (
             <Link
-              key={item}
+              key={item.id}
               className="cart-recommendation-card"
               to="/nft/$id"
-              params={{ id: item }}
+              params={{ id: item.id }}
             >
-              <img src={artSrc(item)} alt="" width={218} height={218} />
+              <img src={artSrc(item.id)} alt="" width={218} height={218} />
               <div>
-                <small>
-                  {
-                    [
-                      "Kurio Apes",
-                      "Órbitas",
-                      "Ondas",
-                      "Kurio Apes",
-                      "Horizontes",
-                    ][index]
-                  }
-                </small>
-                <h3 role="presentation">
-                  {
-                    [
-                      "Órbita Solar",
-                      "Maré Lunar",
-                      "Anel de Jade",
-                      "Eclipse de Cobre",
-                      "Horizonte Dourado",
-                    ][index]
-                  }
-                </h3>
-                <strong>{(0.32 + index * 0.05).toFixed(2)} ETH</strong>
+                <h3 role="presentation">{item.title}</h3>
+                <strong>{item.price} ETH</strong>
               </div>
             </Link>
           ))}
+        </div>
+
+        <div className="cart-recommendation-dots" aria-hidden="true">
+          <span />
+          <span />
+          <span />
         </div>
       </section>
     </section>
@@ -1604,8 +1980,47 @@ const profileRoute = createRoute({
     />
   ),
 });
+const activityRoute = createRoute({
+  getParentRoute: () => root,
+  path: "/atividade",
+  beforeLoad: privateRoute,
+  component: () => (
+    <AccountBasicPage api={api} kind="activity" />
+  ),
+});
+
+const watchlistRoute = createRoute({
+  getParentRoute: () => root,
+  path: "/lista-de-interesse",
+  beforeLoad: privateRoute,
+  component: () => (
+    <AccountBasicPage api={api} kind="watchlist" />
+  ),
+});
+
+const offersRoute = createRoute({
+  getParentRoute: () => root,
+  path: "/ofertas",
+  beforeLoad: privateRoute,
+  component: () => (
+    <AccountBasicPage api={api} kind="offers" />
+  ),
+});
+
+const downloadsRoute = createRoute({
+  getParentRoute: () => root,
+  path: "/downloads",
+  beforeLoad: privateRoute,
+  component: () => (
+    <AccountBasicPage api={api} kind="downloads" />
+  ),
+});
 const router = createRouter({
   routeTree: root.addChildren([
+    activityRoute,
+    watchlistRoute,
+    offersRoute,
+    downloadsRoute,
     profileRoute,
     walletsRoute,
     home,

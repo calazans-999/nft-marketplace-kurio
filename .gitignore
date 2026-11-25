@@ -8,3 +8,7 @@ test-results/
 .env.*.local
 playwright-*.log
 .vercel
+
+capturas-mobile/
+reports/layout/
+*.mobile-backup

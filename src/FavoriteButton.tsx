@@ -19,7 +19,8 @@ export function FavoriteButton({
 }) {
   const client = useQueryClient();
   const key = ["favorites", owner] as const;
-  const mutationKey = ["change-favorite", owner] as const;
+  const mutationKey = ["change-favorite", owner, nftId] as const;
+
   const busy = useIsMutating({ mutationKey }) > 0;
 
   const favorites = useQuery({
@@ -28,56 +29,117 @@ export function FavoriteButton({
       (await api.get<Favorites>("/favorites", { signal })).data,
   });
 
+  const selected = favorites.data?.ids.includes(nftId) ?? false;
+
   const change = useMutation({
     mutationKey,
     retry: false,
+
     mutationFn: async (add: boolean) => {
       const path = "/favorites/" + encodeURIComponent(nftId);
+
       const response = add
         ? await api.put<Favorites>(path)
         : await api.delete<Favorites>(path);
+
       return response.data;
     },
+
     onMutate: async (add) => {
-      await client.cancelQueries({ queryKey: key, exact: true });
-      const previous = client.getQueryData<Favorites>(key);
-      if (previous) {
-        const ids = new Set(previous.ids);
-        if (add) ids.add(nftId);
-        else ids.delete(nftId);
-        client.setQueryData<Favorites>(key, { ids: [...ids] });
+      await client.cancelQueries({
+        queryKey: key,
+        exact: true,
+      });
+
+      const previous =
+        client.getQueryData<Favorites>(key) ??
+        favorites.data ??
+        { ids: [] };
+
+      const ids = new Set(previous.ids);
+
+      if (add) {
+        ids.add(nftId);
+      } else {
+        ids.delete(nftId);
       }
+
+      client.setQueryData<Favorites>(key, {
+        ids: [...ids],
+      });
+
       return { previous };
     },
+
     onError: (_error, _add, context) => {
-      if (context?.previous) client.setQueryData(key, context.previous);
+      if (context?.previous) {
+        client.setQueryData(key, context.previous);
+      }
     },
-    onSuccess: (saved) => client.setQueryData(key, saved),
-    onSettled: () => client.invalidateQueries({ queryKey: key, exact: true }),
+
+    onSuccess: (saved) => {
+      client.setQueryData(key, saved);
+    },
+
+    onSettled: async () => {
+      await client.invalidateQueries({
+        queryKey: key,
+        exact: true,
+      });
+    },
   });
 
-  if (favorites.isPending) return <p role="status">Carregando favoritos…</p>;
-  if (favorites.isError)
+  if (favorites.isPending) {
     return (
-      <button onClick={() => favorites.refetch()}>
-        Tentar carregar favoritos
-      </button>
+      <span
+        className="favorite-loading"
+        role="status"
+        aria-label="Carregando favoritos"
+      >
+        ♡
+      </span>
     );
+  }
 
-  const selected = favorites.data.ids.includes(nftId);
-  return (
-    <div>
+  if (favorites.isError) {
+    return (
       <button
         type="button"
-        aria-label={selected ? "Remover dos favoritos" : "Favoritar obra"}
+        className="favorite-retry"
+        aria-label="Tentar carregar favoritos novamente"
+        onClick={() => void favorites.refetch()}
+      >
+        ♡
+      </button>
+    );
+  }
+
+  return (
+    <div className="favorite-control">
+      <button
+        type="button"
+        className={`favorite-button${selected ? " favorite-selected" : ""}`}
+        aria-label={
+          selected ? "Remover dos favoritos" : "Adicionar aos favoritos"
+        }
+        title={
+          selected ? "Remover dos favoritos" : "Adicionar aos favoritos"
+        }
         aria-pressed={selected}
         disabled={busy}
         onClick={() => change.mutate(!selected)}
       >
-        {selected ? "Remover dos favoritos" : "Favoritar obra"}
+        <span className="favorite-icon" aria-hidden="true">
+          {selected ? "♥" : "♡"}
+        </span>
+
+        <span className="favorite-text">
+          {selected ? "Remover dos favoritos" : "Favoritar obra"}
+        </span>
       </button>
+
       {change.isError && (
-        <p role="alert">
+        <p className="favorite-error" role="alert">
           Não foi possível atualizar os favoritos. Tente novamente.
         </p>
       )}
